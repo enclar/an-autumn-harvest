@@ -65,9 +65,20 @@ const addBubbleGrid = (rows, cols) => {
 //! Function to generate shooter bubble
 const getShooter = () => {
   const $shooter = addBubble();
-  $shooter.attr("id", "shooter"); 
-  $("#game-screen").append($shooter);
+  $shooter.attr("id", "shooter-bubble")
+  $("#shooter").append($shooter);
 };
+
+//! Div to show angle of shooting
+const $trajectory = $("<div>").attr("id", "trajectory");
+$("#game-screen").append($trajectory);
+
+//! Function to rotate trajectory anti-clockwise
+let rotateAngle = 0;
+
+const rotateAnticlockwise = (angle) => {
+  $("#trajectory").css("transform", `rotate(${angle}deg)`);
+}
 
 //! Function to shoot bubble
 const shootBubble = () => {
@@ -77,11 +88,6 @@ const shootBubble = () => {
   }); 
 };
 
-//! Create a div to show angle 
-//! Function to rotate clockwise
-const rotateClockwise = () => {
-
-};
 
 $(() => {
 
@@ -101,10 +107,11 @@ $(() => {
   // });
 
   //! Event listener to change angle of shooting
-  // $(window).on("keydown", (event) => {
-  //   if (event.which === 39) {
-  //     rotate
-  //   }
-  // })
+  $(window).on("keydown", (event) => {
+    if (event.which === 39) {
+      rotateAngle += 10;
+      rotateAnticlockwise(rotateAngle);
+    };
+  });
 
 })

@@ -36,6 +36,21 @@
 
 #shooter {
   position: relative;
-  left: 225px;
   bottom: 50px;
+}
+
+#shooter-bubble {
+  position: relative;
+  left: 225px;
+  bottom: 0px;
+}
+
+#trajectory {
+  box-shadow: inset 0 0 2px navy;
+  width: 2px;
+  height: 100px;
+  position: relative;
+  left: 249px;
+  bottom: 175px;
+  transform-origin: 1px 100px;
 }
