@@ -2,7 +2,7 @@
   background-color: lavender;
   width: 500px;
   height: 500px;
-  margin-bottom: 50px;
+  overflow: hidden;
 }
 
 #grid {
@@ -27,9 +27,15 @@
 }
 
 .green {
-  background-color: green;
+  background-color: yellowgreen
 }
 
 .blue {
-  background-color: blue;
+  background-color: cornflowerblue;
+}
+
+#shooter {
+  position: relative;
+  left: 225px;
+  bottom: 50px;
 }
