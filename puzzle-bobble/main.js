@@ -16,19 +16,47 @@ const addBubble = () =>  {
   return $bubble;
 };
 
+//! Creating an array to hold the coordinates of each bubble generated
+const bubbleGrid = [];
+
+//! Creating a function to add in a bubble in an even row
+const addEvenRow = (i, j) => { // Function takes row number as a parameter
+  const $bubble = addBubble();
+  $bubble.css("left", (j*50)); // Distance from the left of the container
+  $bubble.css("top", (i*50)); // Distance from the top of the container
+
+  $bubble.attr("data-row", i); // Setting row data
+  $bubble.attr("data-col", j); // Setting column data
+
+  bubbleGrid.push([i, j]);
+
+  $("#grid").append($bubble); // Adding the bubble into the grid
+
+};
+
+//! Creating a function to add in a bubble in an odd row
+const addOddRow = (i, j) => { // Function takes row number as a parameter
+  const $bubble = addBubble();
+  $bubble.css("left", (j*50)+25); // Distance from the left of the container
+  $bubble.css("top", (i*50)); // Distance from the top of the container
+
+  $bubble.attr("data-row", i); // Setting row data
+  $bubble.attr("data-col", j); // Setting column data
+
+  bubbleGrid.push([i, j]);
+  
+  $("#grid").append($bubble); // Adding the bubble into the grid
+
+};
+
 //! Function to generate bubble grid
 const addBubbleGrid = (rows, cols) => {
   for (let i=0; i<rows; i++) { // For the number of rows
       for (let j=0; j<cols; j++) { // For the number of columns
-          const $bubble = addBubble();
           if (i%2 === 0) { // If it is an even row
-              $bubble.css("left", (j*50)); // Top left coords of bubble
-              $bubble.css("top", (i*50));
-              $("#grid").append($bubble);
+            addEvenRow(i, j); // Add a bubble in an even row
           } else if (i%2 !== 0 && j !== cols-1) { // If it is an odd row
-              $bubble.css("left", (j*50)+25); // Accounting for offset
-              $bubble.css("top", (i*50));
-              $("#grid").append($bubble);
+            addOddRow(i, j); // Add a bubble in an odd row
           };
       };
   };
@@ -59,7 +87,9 @@ $(() => {
 
   $("#start-screen").hide();
 
-  addBubbleGrid(5, 10);
+  addBubbleGrid(5, 10); // Generating a grid of 5 rows with 10 bubbles per row
+  console.log(bubbleGrid); // Checking that all the row and 
+
   getShooter();
 
   //! Event listener to shoot
