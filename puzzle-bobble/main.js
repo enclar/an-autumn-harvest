@@ -73,12 +73,12 @@ const getShooter = () => {
 const $trajectory = $("<div>").attr("id", "trajectory");
 $("#game-screen").append($trajectory);
 
-//! Function to rotate trajectory anti-clockwise
+//! Functions to rotate trajectory
 let rotateAngle = 0;
 
-const rotateAnticlockwise = (angle) => {
+const rotateTrajectory = (angle) => {
   $("#trajectory").css("transform", `rotate(${angle}deg)`);
-}
+};
 
 //! Function to shoot bubble
 const shootBubble = () => {
@@ -99,19 +99,27 @@ $(() => {
   getShooter();
 
   //! Event listener to shoot
-  // $(window).on("keydown", (event) => {
-  //   if (event.which === 32) {
-  //     shootBubble();
-      
-  //   }
-  // });
+  $(window).on("keydown", (event) => {
+    if (event.which === 32) {
+      shootBubble(); // Shooting the bubble
+      rotateAngle = 0; // Resetting the angle to zero
+    }
+  });
 
   //! Event listener to change angle of shooting
   $(window).on("keydown", (event) => {
-    if (event.which === 39) {
-      rotateAngle += 10;
-      rotateAnticlockwise(rotateAngle);
-    };
+    if (event.which === 39) { // Listening for pressdown of right arrow key
+      if (rotateAngle <= 80) { // Preventing arrow from rotating out of the playing field
+        rotateAngle += 10; // Angle of rotation changes by 10deg with each press
+        rotateTrajectory(rotateAngle);
+      }
+    }
+    if (event.which === 37) {
+      if (rotateAngle >= -80) {
+        rotateAngle -= 10;
+        rotateTrajectory(rotateAngle);
+      }
+    }
   });
 
 })

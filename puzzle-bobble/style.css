@@ -48,9 +48,9 @@
 #trajectory {
   box-shadow: inset 0 0 2px navy;
   width: 2px;
-  height: 100px;
+  height: 600px;
   position: relative;
   left: 249px;
-  bottom: 175px;
-  transform-origin: 1px 100px;
+  bottom: 675px;
+  transform-origin: 1px 600px;
 }
