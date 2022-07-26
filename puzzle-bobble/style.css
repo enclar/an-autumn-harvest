@@ -54,3 +54,8 @@
   bottom: 675px;
   transform-origin: 1px 600px;
 }
+
+.row {
+  width: 500px;
+  height: 50px;
+}
