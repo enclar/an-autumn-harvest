@@ -4,7 +4,7 @@ import $ from "jquery";
 const $rows = $(".row");
 
 //* FUNCTIONS
-//! Creating a function to select a color from array of chosen colors
+//! Function to select a color from array of chosen colors
 const colors = ["red", "yellow", "blue", "green"];
 
 const randomColor = (arr) => {
@@ -12,7 +12,7 @@ const randomColor = (arr) => {
   return arr[ranNum];
 };
 
-//! Creating a function to generate a bubble
+//! Function to generate a bubble
 const addBubble = () =>  {
   const $bubble = $("<div>").addClass("bubble");
   return $bubble;
@@ -31,51 +31,10 @@ const addBubble = () =>  {
 //   }
 // };
 
-//! Creating a function to add in a bubble in an even row
-// const addEvenRow = (i, j) => { // Function takes row & col number as a parameter
-//   const $bubble = addBubble();
-
-//   const $bubbleColor = randomColor(colors);
-//   $bubble.addClass($bubbleColor);
-
-//   $bubble.css("left", (j*50)); // Distance from the left of the container
-//   $bubble.css("top", (i*50)); // Distance from the top of the container
-
-//   $bubble.attr("data-row", i); // Setting row data
-//   $bubble.attr("data-col", j); // Setting column data
-
-//   // bubbleGrid.push(new Bubble(i, j, [(i*50), (j*50)], $bubbleColor)); // Appending bubble data to bubble grid array
-
-//   bubbleGrid.push([i, j]);
-
-//   $(".row").eq(i).append($bubble); // Adding the bubble into i row of grid
-
-// };
-
-//! Creating a function to add in a bubble in an odd row
-// const addOddRow = (i, j) => { // Function takes row & col number as a parameter
-//   const $bubble = addBubble();
-
-//   const $bubbleColor = randomColor(colors);
-//   $bubble.addClass($bubbleColor);
-
-//   $bubble.css("left", (j*50)+25); // Distance from the left of the container
-//   $bubble.css("top", (i*50)); // Distance from the top of the container
-
-//   $bubble.attr("data-row", i); // Setting row data
-//   $bubble.attr("data-col", j); // Setting column data
-
-//   // bubbleGrid.push(new Bubble(i, j, [(i*50), (j*50)], $bubbleColor)); // Appending bubble data to bubble grid array
-  
-//   bubbleGrid.push([i, j]);
-
-//   $(".row").eq(i).append($bubble); // Adding the bubble into i row of grid
-// };
-
 //! Creating an array to hold the coordinates of each bubble generated
 const bubbleGrid = [];
 
-//! Creating a function to generate a bubble in the bubble grid
+//! Function to generate a bubble in the bubble grid
 const addBubbleInGrid = (row, col) => {
   // Creating the bubble and giving it a color
   const $bubble = addBubble();
@@ -93,7 +52,7 @@ const addBubbleInGrid = (row, col) => {
   console.log(`Appended a bubble at ${[row, col]}`);
 };
 
-//! Creating a function to generate a grid of bubbles
+//! Function to generate a grid of bubbles
 const addBubbleGrid = (rows, cols) => {
   // Looping each row
   for (let i=0; i<rows; i++) {
@@ -112,8 +71,10 @@ const addBubbleGrid = (rows, cols) => {
   console.log(`These are the coordinates of bubbles in the grid: ${bubbleGrid}`);
 };
 
-//! Creating a function to generate shooter bubble
+//! Function to generate shooter bubble
 const addShooter = () => {
+  $("#shooter").empty();
+
   // Generating bubble and giving it a color
   const $shooter = addBubble().addClass(randomColor(colors));
 
@@ -131,12 +92,12 @@ $("#game-screen").append($trajectory);
 //! Creating a variable to store the angle of rotation
 let rotateAngle = 0;
 
-//! Creating a function to rotate trajectory
+//! Function to rotate trajectory
 const rotateTrajectory = (angle) => {
   $("#trajectory").css("transform", `rotate(${angle}deg)`);
 };
 
-//! Creating a function to check which is the lowest row that the bubble can land in
+//! Function to check which is the lowest row that the bubble can land in
 const firstEmptyRow = () => {
   let emptyRow = 0;
   for (let i=0; i<9; i++) {
@@ -149,7 +110,7 @@ const firstEmptyRow = () => {
 //! Creating an array to hold the possible intersections
 let possibleLandingCoords = [];
 
-//! Creating a function to convert angle from degrees to radians
+//! Function to convert angle from degrees to radians
 const convertAngle = (angle) => {
   // Checking if angle is negative
   if (angle < 0) {
@@ -158,7 +119,7 @@ const convertAngle = (angle) => {
   return angle * (Math.PI / 180);
 };
 
-//! Creating function to find possible positions a bubble could land in
+//! Function to find possible positions a bubble could land in
 const landingCoords = (emptyRow) => { // Argument taken is the first empty row
   // Checking that the first empty row is correct
   console.log(`The first empty row is row${emptyRow}`);
@@ -228,16 +189,31 @@ const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
     $("#shooter-bubble").animate({
       left: `+=${leftDist}`,
       bottom: `+=${bottomDist}`
-    });
+    }, "slow");
   } else {
     leftDist = (9-col)*25;
     $("#shooter-bubble").animate({
       left: `-=${leftDist}`,
       bottom: `+=${bottomDist}`
-    });
+    }, "slow");
   };
+
+  addShooterToGrid(row, col);
 };
 
+//! Function to add bubble into bubble grid and out of shooter div
+const addShooterToGrid = (row, col) => {
+  const $shooterClass = $("#shooter-bubble").attr("class");
+  console.log($shooterClass);
+
+  const $bubble = addBubble();
+  $bubble.attr("class", $shooterClass);
+  $bubble.css("left", col*25);
+  $bubble.css("top", row*50);
+
+  bubbleGrid.push(`${row}${col}`);
+  $rows.eq(row).append($bubble);
+};
 
 //! LOAD AFTER DOM HAS LOADED
 $(() => {
@@ -273,7 +249,15 @@ $(() => {
       // Shooting the bubble
       const emptyRow = firstEmptyRow();
       const possibleCoords = landingCoords(emptyRow);
-      shootBubble(finalPosition(possibleCoords));
+      const finalCoord = finalPosition(possibleCoords);
+      shootBubble(finalCoord);
+
+      // Removing the bubble as a shooter and adding it into the grid at the correct position
+      addShooterToGrid(finalCoord);
+
+      // Generating a new shooter and clearing everything
+      addShooter();
+      possibleLandingCoords = [];
     };
   });
 
