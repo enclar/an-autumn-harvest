@@ -239,30 +239,57 @@ const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
 // check bubble at row-(x+1) col(x+1)
 
 //! Function to check if shooter is in a color cluster
-const checkCluster = (arr) => { // The argument is an array with the clustered colors
-  for (let i=0; i<arr.length; i++) {
+// const checkCluster = (arr) => { // The argument is an array with the clustered colors
+//   for (let i=0; i<arr.length; i++) {
 
-    const row = parseInt(arr[i][0]);
-    const col = parseInt(arr[i].substr(1));
-    console.log(`This is the row and col we are looking at:`, row, col);
+//     const row = parseInt(arr[i][0]);
+//     const col = parseInt(arr[i].substr(1));
+//     console.log(`This is the row and col we are looking at:`, row, col);
 
-    const $clusterColor = $rows.eq(row).children().eq(col).attr("class");
-    console.log(`The class we are using as a ref is ${$clusterColor}`);
+//     const $clusterColor = $rows.eq(row).children().eq(col).attr("class");
+//     console.log(`The class we are using as a ref is ${$clusterColor}`);
 
-    const bubblesToCheck = [`${row}${col-2}`, `${row}${col+2}`, `${row-1}${col-1}`, `${row-1}${col+1}`, `${row+1}${col-1}`, `${row+1}${col+1}`];
-    console.log(`These are the bubbles to check: ${bubblesToCheck}`);
+//     const bubblesToCheck = [`${row}${col-2}`, `${row}${col+2}`, `${row-1}${col-1}`, `${row-1}${col+1}`, `${row+1}${col-1}`, `${row+1}${col+1}`];
+//     console.log(`These are the bubbles to check: ${bubblesToCheck}`);
 
-    for (let j=0; j<6; j++) {
-      const bubble = bubblesToCheck[j]
-      const row1 = parseInt(bubble[0]);
-      const col1 = parseInt(bubble.substr(1));
+//     for (let j=0; j<6; j++) {
+//       const bubble = bubblesToCheck[j]
+//       const row1 = parseInt(bubble[0]);
+//       const col1 = parseInt(bubble.substr(1));
 
-      const $checkingColor = $rows.eq(row1).children().eq(col1).attr("class")
-      console.log(`The bubble we are looking at is ${row1}${col1} and the class we are trying to match is ${$checkingColor}`);
+//       const $checkingColor = $rows.eq(row1).children().eq(col1).attr("class")
+//       console.log(`The bubble we are looking at is ${row1}${col1} and the class we are trying to match is ${$checkingColor}`);
 
-      if ($checkingColor == $clusterColor && !colorCluster.includes(bubble)) {
-        colorCluster.push(`${row1}${col1}`);
-      }
+//       if ($checkingColor == $clusterColor && !colorCluster.includes(bubble)) {
+//         colorCluster.push(`${row1}${col1}`);
+//       }
+//     };
+//     console.log(`These are the bubbles to be removed: ${colorCluster}`);
+//   };
+// };
+
+const checkCluster = (coord) => { // The argument is an array with the clustered colors
+  const row = parseInt(coord[0]);
+  const col = parseInt(coord.substr(1));
+  console.log(`This is the row and col we are looking at:`, row, col);
+
+  const $clusterColor = $rows.eq(row).children().eq(col).attr("class");
+  console.log(`The class we are using as a ref is ${$clusterColor}`);
+
+  const bubblesToCheck = [`${row}${col-2}`, `${row}${col+2}`, `${row-1}${col-1}`, `${row-1}${col+1}`, `${row+1}${col-1}`, `${row+1}${col+1}`];
+  console.log(`These are the bubbles to check: ${bubblesToCheck}`);
+
+  for (let j=0; j<6; j++) {
+    const bubble = bubblesToCheck[j]
+    const row1 = parseInt(bubble[0]);
+    const col1 = parseInt(bubble.substr(1));
+
+    const $checkingColor = $rows.eq(row1).children().eq(col1).attr("class")
+    console.log(`The bubble we are looking at is ${row1}${col1} and the class we are trying to match is ${$checkingColor}`);
+
+    if ($checkingColor == $clusterColor && !colorCluster.includes(bubble)) {
+      colorCluster.push(`${row1}${col1}`);
+      checkCluster(bubble);
     };
     console.log(`These are the bubbles to be removed: ${colorCluster}`);
   };
@@ -338,7 +365,7 @@ $(() => {
       console.log(`These are the bubbles to check: ${colorCluster}`);
 
       // Checking if the shooter had any clusters
-      checkCluster(colorCluster);
+      checkCluster(finalCoord);
       
       // If a cluster is detected, remove the items in that cluster
       // if (colorCluster.length >= 3) {
