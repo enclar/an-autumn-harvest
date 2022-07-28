@@ -158,55 +158,33 @@ const convertAngle = (angle) => {
   return angle * (Math.PI / 180);
 };
 
-//! Creating function to find possible launch positions
-const possiblePositions = (lowestRow) => {
-  const angleInRadians = convertAngle(rotateAngle); // Converting angle to radians
+//! Creating function to find possible positions a bubble could land in
+const landingCoords = (emptyRow) => { // Argument taken is the first empty row
+  let xDist, yDist, col;
 
-  for (let i=0; i<=lowestRow; i++) {
-    const yDist = (9-i) * 50;
-    let xDist, col;
-    if (rotateAngle >= 0) { // If bubble is shooting towards the right
-      xDist = 250 + (yDist * Math.tan(angleInRadians));
-      col = Math.round(xDist/50);
-      console.log("angle is", rotateAngle);
-      console.log("yDist is", yDist);
-      console.log("xDist is", xDist);
-      console.log("xDist/50 is", xDist/50);
-      possibleIntersections.push([i, col]);
-    } else { // If bubble is shooting towards the left
-      xDist = 250 - (yDist * Math.tan(angleInRadians));
-      col = Math.round(xDist/50);
-      possibleIntersections.push([i, col]);
+  // Converting angle to radians
+  const angleInRadians = convertToRadians(rotateAngle);
+  console.log(`The trajectory angle is ${rotateAngle}deg and ${angleInRadians}rad`);
+
+  // For each row from the top to the bottom row
+  for (let row=0; row<=emptyRow; row++) {
+    yDist = ((9-row) * 50) + 25;
+    xDist = yDist * Math.tan(angleInRadians);
+
+    if (rotateAngle >= 0) {
+      col = Math.round(xDist/25); // Number of cols from middle, NOT edge
+      if (row%2 == 0 && col%2 != 0 && col >= 0) {
+        col += 9;
+        possibleLandingCoords.unshift(`${row}, ${col}`);
+      } else if (row%2 != 0 && col%2 == 0 && col >=0) {
+        col += 9;
+        possibleLandingCoords.unshift(`${row}, ${col}`);
+      };
     };
   };
-
-  console.log(possibleIntersections);
-};
-
-//! Function to check if position is empty
-const finalPosition = (arr) => {
-  let trajectory;
-  for (const position of arr) {
-    if (!bubbleGrid.includes(position)) { // Checking if the div is filled
-      trajectory = position; // The lowest div that is not filled will be the final position
-    };
-  };
-
-  const bottom = (trajectory[0]-1) * 50;
-  let left;
-  console.log(trajectory[0], trajectory [1]);
-
-  if (trajectory[0]%2 === 0) { // If it is an even row
-    left = (trajectory[1] * 50) - 250;
-  } else { // If it is an odd row
-    left = (trajectory[1] * 50) - 250;
-  };
-
-  shootBubble(left, bottom);
-
-  // const $shooter = $("#shooter-bubble");
-  // $shooter.remove();
-  // $rows.eq(row).append($shooter.attr("id", ""))
+  // Log and return an array of the possible landing coordinates
+  console.log(`These are the possible landing coordinates: ${possibleLandingCoords}`);
+  return possibleLandingCoords;
 }
 
 //! Function to shoot bubble
@@ -224,11 +202,6 @@ $(() => {
   $("#start-screen").hide();
 
   addBubbleGrid(5, 10); // Generating a grid of 5 rows with 9/10 bubbles per row
-  console.log(bubbleGrid); // Putting the coordinates of all the bubbles into an array
-
-  getShooter(); // Generating the shooter bubble
-  
-  console.log(firstEmptyDiv());
 
   //! Event listener to change angle of shooting
   $(window).on("keydown", (event) => {
@@ -249,12 +222,7 @@ $(() => {
   //! Event listener to shoot
   $(window).on("keydown", (event) => {
     if (event.which === 32) { // Listening for pressdown of spacebar
-      possiblePositions(firstEmptyDiv());
-      finalPosition(possibleIntersections);
-      // shootBubble(); // Shooting the bubble
-      // getShooter(); // Generating a new shooter bubble
-      rotateAngle = 0; // Resetting the trajectory angle to zero
-      rotateTrajectory(rotateAngle); // Resetting trajectory div to center
+      
     };
   });
 
