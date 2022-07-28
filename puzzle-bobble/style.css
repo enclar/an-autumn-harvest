@@ -11,6 +11,16 @@
   position: relative;
 }
 
+.row {
+  width: 500px;
+  height: 50px;
+}
+
+/* .sq-div {
+  width: 25px;
+  height: 50px;
+} */
+
 .bubble {
   position: absolute;
   width: 50px;
@@ -51,11 +61,7 @@
   height: 600px;
   position: relative;
   left: 249px;
-  bottom: 675px;
+  bottom: 625px;
   transform-origin: 1px 600px;
 }
 
-.row {
-  width: 500px;
-  height: 50px;
-}

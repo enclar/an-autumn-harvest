@@ -4,9 +4,9 @@ import $ from "jquery";
 const $rows = $(".row");
 
 //! Creating function to add divs into each row
-const addDivs = (cols) => {
+const addDivs = () => {
   for (let i=0; i<10; i++) {
-    for (let j=0; j<=cols; j++) {
+    for (let j=0; j<20; j++) {
       $rows.eq(i).append($("<div>"));
     };
   };
@@ -21,10 +21,10 @@ const randomColor = (arr) => {
 };
 
 //! Function to generate a bubble
-const addBubble = () =>  {
-  const $bubble = $("<div>").addClass("bubble");
-  return $bubble;
-};
+// const addBubble = () =>  {
+//   const $bubble = $("<div>").addClass("bubble");
+//   return $bubble;
+// };
 
 //! Creating a bubble class
 // class Bubble {
@@ -43,20 +43,35 @@ const addBubble = () =>  {
 const bubbleGrid = [];
 
 //! Function to generate a bubble in the bubble grid
+// const addBubbleInGrid = (row, col) => {
+//   // Creating the bubble and giving it a color
+//   const $bubble = addBubble();
+//   $bubble.addClass(randomColor(colors));
+
+//   // Setting the coordinates of the bubble
+//   $bubble.css("left", col*25);
+//   $bubble.css("top", row*50);
+
+//   // Adding row and col data to an array
+//   bubbleGrid.push(`${row}${col}`);
+
+//   // Appending the bubble to the respective row
+//   $rows.eq(row).append($bubble);
+//   console.log(`Appended a bubble at ${[row, col]}`);
+// };
+
 const addBubbleInGrid = (row, col) => {
-  // Creating the bubble and giving it a color
-  const $bubble = addBubble();
+  // Selecting the corresponding div
+  const $bubble = $rows.eq(row).children().eq(col);
+
+  $bubble.addClass("bubble");
   $bubble.addClass(randomColor(colors));
 
   // Setting the coordinates of the bubble
   $bubble.css("left", col*25);
   $bubble.css("top", row*50);
 
-  // Adding row and col data to an array
   bubbleGrid.push(`${row}${col}`);
-
-  // Appending the bubble to the respective row
-  $rows.eq(row).append($bubble);
   console.log(`Appended a bubble at ${[row, col]}`);
 };
 
@@ -81,16 +96,15 @@ const addBubbleGrid = (rows, cols) => {
 
 //! Function to generate shooter bubble
 const addShooter = () => {
-  $("#shooter").empty();
+  // Selecting the corresponding div
+  const $shooter = $rows.eq(-1).children().eq(9);
 
-  // Generating bubble and giving it a color
-  const $shooter = addBubble().addClass(randomColor(colors));
+  // Adding properties to it
+  $shooter.addClass("bubble");
+  $shooter.addClass(randomColor(colors));
 
   // Attaching the shooter-bubble id to the shooter bubble
-  $shooter.attr("id", "shooter-bubble")
-
-  // Appending bubble to the shooter div
-  $("#shooter").append($shooter);
+  $shooter.attr("id", "shooter-bubble");
 };
 
 //! Creating a div to show angle of shooting
@@ -106,14 +120,14 @@ const rotateTrajectory = (angle) => {
 };
 
 //! Function to check which is the lowest row that the bubble can land in
-const firstEmptyRow = () => {
-  let emptyRow = 0;
-  for (let i=0; i<9; i++) {
-    if ($rows.eq(i).children().length === 0) {
-      return emptyRow = i;
-    };
-  };
-};
+// const firstEmptyRow = () => {
+//   let emptyRow = 0;
+//   for (let i=0; i<9; i++) {
+//     if ($rows.eq(i).children().length === 0) {
+//       return emptyRow = i;
+//     };
+//   };
+// };
 
 //! Creating an array to hold the possible intersections
 let possibleLandingCoords = [];
@@ -128,9 +142,9 @@ const convertAngle = (angle) => {
 };
 
 //! Function to find possible positions a bubble could land in
-const landingCoords = (emptyRow) => { // Argument taken is the first empty row
+const landingCoords = () => { // Argument taken is the first empty row
   // Checking that the first empty row is correct
-  console.log(`The first empty row is row${emptyRow}`);
+  // console.log(`The first empty row is row${emptyRow}`);
 
   // Defining variables
   let yDist, xDist, col;
@@ -138,7 +152,7 @@ const landingCoords = (emptyRow) => { // Argument taken is the first empty row
   console.log(`The trajectory angle is ${rotateAngle}`);
   const angleInRadians = convertAngle(rotateAngle);
 
-  for (let row=0; row<=emptyRow; row++) {
+  for (let row=0; row<=9; row++) {
       yDist = ((9-row) * 50) + 25;
       xDist = yDist * Math.tan(angleInRadians);
 
@@ -168,8 +182,13 @@ const landingCoords = (emptyRow) => { // Argument taken is the first empty row
   return possibleLandingCoords;
 }
 
+//! Creating an array to store matching colors
+const colorCluster = [];
+
 //! Function to check if the possible positions are empty
 const finalPosition = (arr) => { // Argument taken is an array of possible landing coords
+
+  // Create a variable to store the final position where the bubble should land
   let finalLandingCoord;
 
   for (const coord of possibleLandingCoords) {
@@ -179,6 +198,7 @@ const finalPosition = (arr) => { // Argument taken is an array of possible landi
   };
   // Log and return the position for the bubble to land on
   console.log(`The bubble will land on ${finalLandingCoord}`);
+  colorCluster.push(finalLandingCoord);
   return finalLandingCoord;
 };
 
@@ -209,23 +229,71 @@ const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
   addShooterToGrid(row, col);
 };
 
+//! Determining which positions to check
+// let the bubble be at x
+// check bubble at row-x col-(x-2)
+// check bubble at row-x col(x+2)
+// check bubble at row-(x-1) col(x-1)
+// check bubble at row-(x-1) col(x+1)
+// check bubble at row-(x+1) col(x-1)
+// check bubble at row-(x+1) col(x+1)
+
+//! Function to check if shooter is in a color cluster
+const checkCluster = (arr) => { // The argument is an array with the clustered colors
+  for (let i=0; i<arr.length; i++) {
+
+    const row = parseInt(arr[i][0]);
+    const col = parseInt(arr[i].substr(1));
+    console.log(`This is the row and col we are looking at:`, row, col);
+
+    const $clusterColor = $rows.eq(row).children().eq(col).attr("class");
+    console.log(`The class we are using as a ref is ${$clusterColor}`);
+
+    const bubblesToCheck = [`${row}${col-2}`, `${row}${col+2}`, `${row-1}${col-1}`, `${row-1}${col+1}`, `${row+1}${col-1}`, `${row+1}${col+1}`];
+    console.log(`These are the bubbles to check: ${bubblesToCheck}`);
+
+    for (let j=0; j<6; j++) {
+      const bubble = bubblesToCheck[j]
+      const row1 = parseInt(bubble[0]);
+      const col1 = parseInt(bubble.substr(1));
+
+      const $checkingColor = $rows.eq(row1).children().eq(col1).attr("class")
+      console.log(`The bubble we are looking at is ${row1}${col1} and the class we are trying to match is ${$checkingColor}`);
+
+      if ($checkingColor == $clusterColor && !colorCluster.includes(bubble)) {
+        colorCluster.push(`${row1}${col1}`);
+      }
+    };
+    console.log(`These are the bubbles to be removed: ${colorCluster}`);
+  };
+};
+
 //! Function to add bubble into bubble grid and out of shooter div
 const addShooterToGrid = (row, col) => {
   const $shooterClass = $("#shooter-bubble").attr("class");
   console.log($shooterClass);
 
-  const $bubble = addBubble();
+  const $bubble = $rows.eq(row).children().eq(col);
   $bubble.attr("class", $shooterClass);
   $bubble.css("left", col*25);
   $bubble.css("top", row*50);
 
   bubbleGrid.push(`${row}${col}`);
-  $rows.eq(row).append($bubble);
+  console.log(`Appended a bubble at ${[row, col]}`);
 };
 
-//! Function to check if shooter is combined with 
+//! Function to 'reload' the shooter
+const reloadShooter = () => {
+  $("#shooter-bubble").remove();
+  $rows.eq(9).append("<div>");
 
-//! LOAD AFTER DOM HAS LOADED
+  addShooter();
+
+  console.log("Reloaded shooter bubble");
+};
+
+
+//* LOAD AFTER DOM HAS LOADED
 $(() => {
 
   //! Hide the start screen
@@ -235,43 +303,58 @@ $(() => {
   addDivs(19);
 
   //! Generating a grid with 9/10 bubbles per row
-  // addBubbleGrid(5, 20);
+  addBubbleGrid(5, 20);
 
   //! Generating shooter bubble
-  // addShooter();
+  addShooter();
 
   //! Event listener to change angle of shooting
-  // $(window).on("keydown", (event) => {
-  //   if (event.which === 39) { // Listening for pressdown of right arrow key
-  //     if (rotateAngle <= 45) { // Preventing arrow from rotating out of the playing field
-  //       rotateAngle += 1; // Angle of rotation changes by 1deg with each press
-  //       rotateTrajectory(rotateAngle);
-  //     };
-  //   };
-  //   if (event.which === 37) {
-  //     if (rotateAngle >= -45) {
-  //       rotateAngle -= 1;
-  //       rotateTrajectory(rotateAngle);
-  //     };
-  //   };
-  // });
+  $(window).on("keydown", (event) => {
+    if (event.which === 39) { // Listening for pressdown of right arrow key
+      if (rotateAngle <= 45) { // Preventing arrow from rotating out of the playing field
+        rotateAngle += 1; // Angle of rotation changes by 1deg with each press
+        rotateTrajectory(rotateAngle);
+      };
+    };
+    if (event.which === 37) {
+      if (rotateAngle >= -45) {
+        rotateAngle -= 1;
+        rotateTrajectory(rotateAngle);
+      };
+    };
+  });
 
   //! Event listener to shoot
-  // $(window).on("keydown", (event) => {
-  //   if (event.which === 32) { // Listening for pressdown of spacebar
-  //     // Shooting the bubble
-  //     const emptyRow = firstEmptyRow();
-  //     const possibleCoords = landingCoords(emptyRow);
-  //     const finalCoord = finalPosition(possibleCoords);
-  //     shootBubble(finalCoord);
+  $(window).on("keydown", (event) => {
+    if (event.which === 32) { // Listening for pressdown of spacebar
+      // Shooting the bubble
+      // const emptyRow = firstEmptyRow();
+      const possibleCoords = landingCoords();
+      const finalCoord = finalPosition(possibleCoords);
+      shootBubble(finalCoord);
 
-  //     // Removing the bubble as a shooter and adding it into the grid at the correct position
-  //     addShooterToGrid(finalCoord);
+      // Removing the bubble as a shooter and adding it into the grid at the correct position
+      addShooterToGrid(finalCoord);
+      console.log(`These are the bubbles to check: ${colorCluster}`);
 
-  //     // Generating a new shooter and clearing everything
-  //     addShooter();
-  //     possibleLandingCoords = [];
-  //   };
-  // });
+      // Checking if the shooter had any clusters
+      checkCluster(colorCluster);
+      
+      // If a cluster is detected, remove the items in that cluster
+      // if (colorCluster.length >= 3) {
+      //   for (let i=0; i<colorCluster.length; i++) {
+      //     const row = parseInt(colorCluster[i][0]);
+      //     const col = parseInt(colorCluster[i].substr(1));
+
+      //     // Remove the bubble class from the div at that position
+      //     $rows.eq(row).children().eq(col).attr("class", "");
+      //   };
+      // };
+
+      // Generating a new shooter and clearing everything
+      reloadShooter();
+      possibleLandingCoords = [];
+    };
+  });
 
 });
