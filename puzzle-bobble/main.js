@@ -1,9 +1,17 @@
 import $ from "jquery";
 
-//* VARIABLES
+//! Defining a variable for all the divs with row class
 const $rows = $(".row");
 
-//* FUNCTIONS
+//! Creating function to add divs into each row
+const addDivs = (cols) => {
+  for (let i=0; i<10; i++) {
+    for (let j=0; j<=cols; j++) {
+      $rows.eq(i).append($("<div>"));
+    };
+  };
+};
+
 //! Function to select a color from array of chosen colors
 const colors = ["red", "yellow", "blue", "green"];
 
@@ -137,19 +145,19 @@ const landingCoords = (emptyRow) => { // Argument taken is the first empty row
       if (rotateAngle >= 0) {
           col = Math.round((xDist)/25);
           console.log(col);
-          if (row%2 == 0 && col%2 != 0 && col >= 0) {
+          if (row%2 == 0 && col%2 != 0 && col>=0 && col<=9) {
               col += 9;
               possibleLandingCoords.unshift(`${row}${col}`);
-          } else if (row%2 != 0 && col%2 == 0 && col >= 0) {
+          } else if (row%2 != 0 && col%2 == 0 && col>=0 && col<=8) {
               col += 9;
               possibleLandingCoords.unshift(`${row}${col}`);
           }
       } else if (rotateAngle < 0) {
           col = Math.round((xDist)/25);
-          if (row%2 == 0 && col%2 != 0 && 9-col >= 0) {
+          if (row%2 == 0 && col%2 != 0 && 9-col>=0 && 9-col<=9) {
               col = 9-col;
               possibleLandingCoords.unshift(`${row}${col}`);
-          } else if (row%2 != 0 && col%2 == 0 && 9-col >= 0) {
+          } else if (row%2 != 0 && col%2 == 0 && 9-col>=0 && 9-col<=8) {
               col = 9-col;
               possibleLandingCoords.unshift(`${row}${col}`);
           };
@@ -215,50 +223,55 @@ const addShooterToGrid = (row, col) => {
   $rows.eq(row).append($bubble);
 };
 
+//! Function to check if shooter is combined with 
+
 //! LOAD AFTER DOM HAS LOADED
 $(() => {
 
   //! Hide the start screen
   $("#start-screen").hide();
 
+  //! Adding div grid
+  addDivs(19);
+
   //! Generating a grid with 9/10 bubbles per row
-  addBubbleGrid(5, 20);
+  // addBubbleGrid(5, 20);
 
   //! Generating shooter bubble
-  addShooter();
+  // addShooter();
 
   //! Event listener to change angle of shooting
-  $(window).on("keydown", (event) => {
-    if (event.which === 39) { // Listening for pressdown of right arrow key
-      if (rotateAngle <= 45) { // Preventing arrow from rotating out of the playing field
-        rotateAngle += 1; // Angle of rotation changes by 1deg with each press
-        rotateTrajectory(rotateAngle);
-      };
-    };
-    if (event.which === 37) {
-      if (rotateAngle >= -45) {
-        rotateAngle -= 1;
-        rotateTrajectory(rotateAngle);
-      };
-    };
-  });
+  // $(window).on("keydown", (event) => {
+  //   if (event.which === 39) { // Listening for pressdown of right arrow key
+  //     if (rotateAngle <= 45) { // Preventing arrow from rotating out of the playing field
+  //       rotateAngle += 1; // Angle of rotation changes by 1deg with each press
+  //       rotateTrajectory(rotateAngle);
+  //     };
+  //   };
+  //   if (event.which === 37) {
+  //     if (rotateAngle >= -45) {
+  //       rotateAngle -= 1;
+  //       rotateTrajectory(rotateAngle);
+  //     };
+  //   };
+  // });
 
   //! Event listener to shoot
-  $(window).on("keydown", (event) => {
-    if (event.which === 32) { // Listening for pressdown of spacebar
-      // Shooting the bubble
-      const emptyRow = firstEmptyRow();
-      const possibleCoords = landingCoords(emptyRow);
-      const finalCoord = finalPosition(possibleCoords);
-      shootBubble(finalCoord);
+  // $(window).on("keydown", (event) => {
+  //   if (event.which === 32) { // Listening for pressdown of spacebar
+  //     // Shooting the bubble
+  //     const emptyRow = firstEmptyRow();
+  //     const possibleCoords = landingCoords(emptyRow);
+  //     const finalCoord = finalPosition(possibleCoords);
+  //     shootBubble(finalCoord);
 
-      // Removing the bubble as a shooter and adding it into the grid at the correct position
-      addShooterToGrid(finalCoord);
+  //     // Removing the bubble as a shooter and adding it into the grid at the correct position
+  //     addShooterToGrid(finalCoord);
 
-      // Generating a new shooter and clearing everything
-      addShooter();
-      possibleLandingCoords = [];
-    };
-  });
+  //     // Generating a new shooter and clearing everything
+  //     addShooter();
+  //     possibleLandingCoords = [];
+  //   };
+  // });
 
 });
