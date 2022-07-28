@@ -1,7 +1,10 @@
 import $ from "jquery";
 
+//* VARIABLES
+const $rows = $(".row");
+
 //* FUNCTIONS
-//! Function to select color from array of chosen colors
+//! Creating a function to select a color from array of chosen colors
 const colors = ["red", "yellow", "blue", "green"];
 
 const randomColor = (arr) => {
@@ -9,7 +12,7 @@ const randomColor = (arr) => {
   return arr[ranNum];
 };
 
-//! Function to generate bubble
+//! Creating a function to generate a bubble
 const addBubble = () =>  {
   const $bubble = $("<div>").addClass("bubble");
   return $bubble;
@@ -28,89 +31,117 @@ const addBubble = () =>  {
 //   }
 // };
 
+//! Creating a function to add in a bubble in an even row
+// const addEvenRow = (i, j) => { // Function takes row & col number as a parameter
+//   const $bubble = addBubble();
+
+//   const $bubbleColor = randomColor(colors);
+//   $bubble.addClass($bubbleColor);
+
+//   $bubble.css("left", (j*50)); // Distance from the left of the container
+//   $bubble.css("top", (i*50)); // Distance from the top of the container
+
+//   $bubble.attr("data-row", i); // Setting row data
+//   $bubble.attr("data-col", j); // Setting column data
+
+//   // bubbleGrid.push(new Bubble(i, j, [(i*50), (j*50)], $bubbleColor)); // Appending bubble data to bubble grid array
+
+//   bubbleGrid.push([i, j]);
+
+//   $(".row").eq(i).append($bubble); // Adding the bubble into i row of grid
+
+// };
+
+//! Creating a function to add in a bubble in an odd row
+// const addOddRow = (i, j) => { // Function takes row & col number as a parameter
+//   const $bubble = addBubble();
+
+//   const $bubbleColor = randomColor(colors);
+//   $bubble.addClass($bubbleColor);
+
+//   $bubble.css("left", (j*50)+25); // Distance from the left of the container
+//   $bubble.css("top", (i*50)); // Distance from the top of the container
+
+//   $bubble.attr("data-row", i); // Setting row data
+//   $bubble.attr("data-col", j); // Setting column data
+
+//   // bubbleGrid.push(new Bubble(i, j, [(i*50), (j*50)], $bubbleColor)); // Appending bubble data to bubble grid array
+  
+//   bubbleGrid.push([i, j]);
+
+//   $(".row").eq(i).append($bubble); // Adding the bubble into i row of grid
+// };
+
 //! Creating an array to hold the coordinates of each bubble generated
 const bubbleGrid = [];
 
-//! Creating a function to add in a bubble in an even row
-const addEvenRow = (i, j) => { // Function takes row & col number as a parameter
+//! Creating a function to generate a bubble in the bubble grid
+const addBubbleInGrid = (row, col) => {
+  // Creating the bubble and giving it a color
   const $bubble = addBubble();
+  $bubble.addClass(randomColor(colors));
 
-  const $bubbleColor = randomColor(colors);
-  $bubble.addClass($bubbleColor);
+  // Setting the coordinates of the bubble
+  $bubble.css("left", col*25);
+  $bubble.css("top", row*50);
 
-  $bubble.css("left", (j*50)); // Distance from the left of the container
-  $bubble.css("top", (i*50)); // Distance from the top of the container
+  // Adding row and col data to an array
+  bubbleGrid.push(`${row}, ${col}`);
 
-  $bubble.attr("data-row", i); // Setting row data
-  $bubble.attr("data-col", j); // Setting column data
-
-  // bubbleGrid.push(new Bubble(i, j, [(i*50), (j*50)], $bubbleColor)); // Appending bubble data to bubble grid array
-
-  bubbleGrid.push([i, j]);
-
-  $(".row").eq(i).append($bubble); // Adding the bubble into i row of grid
-
+  // Appending the bubble to the respective row
+  $rows.eq(row).append($bubble);
+  console.log(`Appended a bubble at ${[row, col]}`);
 };
 
-//! Creating a function to add in a bubble in an odd row
-const addOddRow = (i, j) => { // Function takes row & col number as a parameter
-  const $bubble = addBubble();
-
-  const $bubbleColor = randomColor(colors);
-  $bubble.addClass($bubbleColor);
-
-  $bubble.css("left", (j*50)+25); // Distance from the left of the container
-  $bubble.css("top", (i*50)); // Distance from the top of the container
-
-  $bubble.attr("data-row", i); // Setting row data
-  $bubble.attr("data-col", j); // Setting column data
-
-  // bubbleGrid.push(new Bubble(i, j, [(i*50), (j*50)], $bubbleColor)); // Appending bubble data to bubble grid array
-  
-  bubbleGrid.push([i, j]);
-
-  $(".row").eq(i).append($bubble); // Adding the bubble into i row of grid
-};
-
-//! Function to generate bubble grid
+//! Creating a function to generate a grid of bubbles
 const addBubbleGrid = (rows, cols) => {
-  for (let i=0; i<rows; i++) { // For the number of rows
-      for (let j=0; j<cols; j++) { // For the number of columns
-          if (i%2 === 0) { // If it is an even row
-            addEvenRow(i, j); // Add a bubble in an even row
-          } else if (i%2 !== 0 && j !== cols-1) { // If it is an odd row
-            addOddRow(i, j); // Add a bubble in an odd row
-          };
+  // Looping each row
+  for (let i=0; i<rows; i++) {
+
+    // Checking if the row is odd or even
+    if (i%2 == 0) {
+      for (let j=0; j<cols-1; j+=2) {
+        addBubbleInGrid(i, j);
       };
+    } else {
+      for (let j=1; j<cols-2; j+=2) {
+        addBubbleInGrid(i, j);
+      };
+    };
   };
 };
 
-//! Function to generate shooter bubble
+//! Creating a function to generate shooter bubble
 const getShooter = () => {
+  // Generating bubble and giving it a color
   const $shooter = addBubble().addClass(randomColor(colors));
+
+  // Attaching the shooter-bubble id to the shooter bubble
   $shooter.attr("id", "shooter-bubble")
+
+  // Appending bubble to the shooter div
   $("#shooter").append($shooter);
 };
 
-//! Div to show angle of shooting
+//! Creating a div to show angle of shooting
 const $trajectory = $("<div>").attr("id", "trajectory");
 $("#game-screen").append($trajectory);
 
-//! Functions to rotate trajectory
+//! Creating a variable to store the angle of rotation
 let rotateAngle = 0;
 
+//! Creating a function to rotate trajectory
 const rotateTrajectory = (angle) => {
   $("#trajectory").css("transform", `rotate(${angle}deg)`);
 };
 
-//! Function to check which is the lowest row that the bubble can land in
-const $rows = $(".row");
-
-const firstEmptyDiv = () => { // Checking the lowest row which contains bubbles
-  let lowestRow = 8; // Assuming the lowest row is 8
-  for (let i=0; i<9; i++) { // For loop to check if each row has children
+//! Creating a function to check which is the lowest row that the bubble can land in
+const firstEmptyRow = () => {
+  let emptyRow = 0;
+  for (let i=0; i<9; i++) {
     if ($rows.eq(i).children().length === 0) {
-      return lowestRow = i; 
+      console.log(`The first empty row is row ${i}`);
+      return emptyRow = i;
     };
   };
 };
@@ -118,8 +149,9 @@ const firstEmptyDiv = () => { // Checking the lowest row which contains bubbles
 //! Creating an array to hold the possible intersections
 let possibleIntersections = [];
 
-//! Function to convert angle from degrees to radians
+//! Creating a function to convert angle from degrees to radians
 const convertAngle = (angle) => {
+  // Checking if angle is negative
   if (angle < 0) {
     angle = -(angle);
   }
