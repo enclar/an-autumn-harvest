@@ -187,6 +187,20 @@ const landingCoords = (emptyRow) => { // Argument taken is the first empty row
   return possibleLandingCoords;
 }
 
+//! Function to check if the possible positions are empty
+const finalPosition = (arr) => { // Argument taken is an array of possible landing coords
+  let finalLandingCoord;
+
+  for (const coord of possibleLandingCoords) {
+    if (!bubbleCoords.includes(coord)) {
+      finalLandingCoord = coord;
+    };
+  };
+  // Log and return the position for the bubble to land on
+  console.log(`The bubble will land on ${finalLandingCoord}`);
+  return finalLandingCoord;
+};
+
 //! Function to shoot bubble
 const shootBubble = (left, bottom) => {
   $("#shooter-bubble ").animate({
