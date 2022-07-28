@@ -86,7 +86,7 @@ const addBubbleInGrid = (row, col) => {
   $bubble.css("top", row*50);
 
   // Adding row and col data to an array
-  bubbleGrid.push(`${row}, ${col}`);
+  bubbleGrid.push(`${row}${col}`);
 
   // Appending the bubble to the respective row
   $rows.eq(row).append($bubble);
@@ -109,10 +109,11 @@ const addBubbleGrid = (rows, cols) => {
       };
     };
   };
+  console.log(`These are the coordinates of bubbles in the grid: ${bubbleGrid}`);
 };
 
 //! Creating a function to generate shooter bubble
-const getShooter = () => {
+const addShooter = () => {
   // Generating bubble and giving it a color
   const $shooter = addBubble().addClass(randomColor(colors));
 
@@ -140,14 +141,13 @@ const firstEmptyRow = () => {
   let emptyRow = 0;
   for (let i=0; i<9; i++) {
     if ($rows.eq(i).children().length === 0) {
-      console.log(`The first empty row is row ${i}`);
       return emptyRow = i;
     };
   };
 };
 
 //! Creating an array to hold the possible intersections
-let possibleIntersections = [];
+let possibleLandingCoords = [];
 
 //! Creating a function to convert angle from degrees to radians
 const convertAngle = (angle) => {
@@ -160,27 +160,39 @@ const convertAngle = (angle) => {
 
 //! Creating function to find possible positions a bubble could land in
 const landingCoords = (emptyRow) => { // Argument taken is the first empty row
-  let xDist, yDist, col;
+  // Checking that the first empty row is correct
+  console.log(`The first empty row is row${emptyRow}`);
 
-  // Converting angle to radians
-  const angleInRadians = convertToRadians(rotateAngle);
-  console.log(`The trajectory angle is ${rotateAngle}deg and ${angleInRadians}rad`);
+  // Defining variables
+  let yDist, xDist, col;
 
-  // For each row from the top to the bottom row
+  console.log(`The trajectory angle is ${rotateAngle}`);
+  const angleInRadians = convertAngle(rotateAngle);
+
   for (let row=0; row<=emptyRow; row++) {
-    yDist = ((9-row) * 50) + 25;
-    xDist = yDist * Math.tan(angleInRadians);
+      yDist = ((9-row) * 50) + 25;
+      xDist = yDist * Math.tan(angleInRadians);
 
-    if (rotateAngle >= 0) {
-      col = Math.round(xDist/25); // Number of cols from middle, NOT edge
-      if (row%2 == 0 && col%2 != 0 && col >= 0) {
-        col += 9;
-        possibleLandingCoords.unshift(`${row}, ${col}`);
-      } else if (row%2 != 0 && col%2 == 0 && col >=0) {
-        col += 9;
-        possibleLandingCoords.unshift(`${row}, ${col}`);
+      if (rotateAngle >= 0) {
+          col = Math.round((xDist)/25);
+          console.log(col);
+          if (row%2 == 0 && col%2 != 0 && col >= 0) {
+              col += 9;
+              possibleLandingCoords.unshift(`${row}${col}`);
+          } else if (row%2 != 0 && col%2 == 0 && col >= 0) {
+              col += 9;
+              possibleLandingCoords.unshift(`${row}${col}`);
+          }
+      } else if (rotateAngle < 0) {
+          col = Math.round((xDist)/25);
+          if (row%2 == 0 && col%2 != 0 && 9-col >= 0) {
+              col = 9-col;
+              possibleLandingCoords.unshift(`${row}${col}`);
+          } else if (row%2 != 0 && col%2 == 0 && 9-col >= 0) {
+              col = 9-col;
+              possibleLandingCoords.unshift(`${row}${col}`);
+          };
       };
-    };
   };
   // Log and return an array of the possible landing coordinates
   console.log(`These are the possible landing coordinates: ${possibleLandingCoords}`);
@@ -192,7 +204,7 @@ const finalPosition = (arr) => { // Argument taken is an array of possible landi
   let finalLandingCoord;
 
   for (const coord of possibleLandingCoords) {
-    if (!bubbleCoords.includes(coord)) {
+    if (!bubbleGrid.includes(coord)) {
       finalLandingCoord = coord;
     };
   };
@@ -202,26 +214,48 @@ const finalPosition = (arr) => { // Argument taken is an array of possible landi
 };
 
 //! Function to shoot bubble
-const shootBubble = (left, bottom) => {
-  $("#shooter-bubble ").animate({
-    left: "+=" + left,
-    bottom: "+=" + bottom
-  });
+const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
+  // Using parseInt to get the row and col of the coord
+  const row = parseInt(coord[0]);
+  const col = parseInt(coord.substr(1));
+
+  // Assining variable for left and bottom distance
+  const bottomDist = (9-row) * 50;
+  let leftDist;
+
+  if (rotateAngle >= 0) {
+    leftDist = (col-9)*25;
+    $("#shooter-bubble").animate({
+      left: `+=${leftDist}`,
+      bottom: `+=${bottomDist}`
+    });
+  } else {
+    leftDist = (9-col)*25;
+    $("#shooter-bubble").animate({
+      left: `-=${leftDist}`,
+      bottom: `+=${bottomDist}`
+    });
+  };
 };
 
 
 //! LOAD AFTER DOM HAS LOADED
 $(() => {
 
+  //! Hide the start screen
   $("#start-screen").hide();
 
-  addBubbleGrid(5, 10); // Generating a grid of 5 rows with 9/10 bubbles per row
+  //! Generating a grid with 9/10 bubbles per row
+  addBubbleGrid(5, 20);
+
+  //! Generating shooter bubble
+  addShooter();
 
   //! Event listener to change angle of shooting
   $(window).on("keydown", (event) => {
     if (event.which === 39) { // Listening for pressdown of right arrow key
       if (rotateAngle <= 45) { // Preventing arrow from rotating out of the playing field
-        rotateAngle += 1; // Angle of rotation changes by 10deg with each press
+        rotateAngle += 1; // Angle of rotation changes by 1deg with each press
         rotateTrajectory(rotateAngle);
       };
     };
@@ -236,8 +270,11 @@ $(() => {
   //! Event listener to shoot
   $(window).on("keydown", (event) => {
     if (event.which === 32) { // Listening for pressdown of spacebar
-      
+      // Shooting the bubble
+      const emptyRow = firstEmptyRow();
+      const possibleCoords = landingCoords(emptyRow);
+      shootBubble(finalPosition(possibleCoords));
     };
   });
 
-})
+});
