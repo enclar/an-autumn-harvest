@@ -394,18 +394,36 @@ $(() => {
       shootBubble(flc);
 
       // Add the shooter bubble into the grid
-      addShooterToGrid(flc);
+      // addShooterToGrid(flc);
 
       // Check if the bubble is in a color cluster
-      checkCluster(flc);
+      // checkCluster(flc);
 
       // Remove bubbles if cluster if 3 or more
-      if (colorCluster.length >= 3) {
-        removeCluster(colorCluster);
-      };
+      // if (colorCluster.length >= 3) {
+      //   removeCluster(colorCluster);
+      // };
 
       // Check the game state
-      checkGameState();
+      // checkGameState();
+
+      //! Run these functions after a certain delay
+      setTimeout(() => {
+        // Add the shooter bubble into the grid
+        addShooterToGrid(flc);
+      
+        // Check if the bubble is in a color cluster
+        checkCluster(flc);
+        
+        // Remove bubbles if cluster if 3 or more
+        if (colorCluster.length >= 3) {
+          removeCluster(colorCluster);
+        };
+        
+        // Check the game state
+        checkGameState();
+      }, 1000);
+      
     };
   });
 
