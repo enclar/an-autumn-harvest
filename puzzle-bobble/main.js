@@ -10,6 +10,27 @@ let colorCluster = []; // Array for temp bubble storage to check for clusters
 
 
 //* DEFINING FUNCTIONS
+//! Function to start the game
+const startGame = () => {
+  $("#start-screen").hide();
+  $("#game-screen").show();
+  $("#score-screen").hide();
+};
+
+//! Function to display score screen
+const showScore = () => {
+  $("#start-screen").hide();
+  $("game-screen").hide();
+  $("#score-screen").show();
+};
+
+//! Function to restart game
+const restartGame = () => {
+  $("#start-screen").show();
+  $("game-screen").hide();
+  $("#score-screen").hide();  
+};
+
 //! Function to add divs into each row
 const addDivs = () => {
   for (let i=0; i<10; i++) {
@@ -328,8 +349,12 @@ const checkGameState = () => {
 //* LOAD AFTER DOM HAS LOADED
 $(() => {
 
-  //! Hide the start screen
-  $("#start-screen").hide();
+  //! Hide the game screen and score screen
+  $("#game-screen").hide();
+  $("#score-screen").hide();
+
+  //! Adding event listener to start game
+  $("#start-btn").on("click", startGame);
 
   //! Adding div grid
   addDivs(19);

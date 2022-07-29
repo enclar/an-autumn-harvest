@@ -5,6 +5,31 @@
   overflow: hidden;
 }
 
+@font-face {
+  font-family: DiloWorld;
+  src: url(fonts/dilo-world.ttf);
+}
+
+#welcome-msg {
+  font-family: DiloWorld;
+  font-size: 60px;
+  color:navy;
+  text-align: center;
+  margin-top: 100px;
+}
+
+#start-btn {
+  position: absolute;
+  width: 150px;
+  height: 75px;
+  background-color: palegoldenrod;
+  top: 250px;
+  left: 175px;
+  text-align: center;
+  color: navy;
+  cursor: pointer;
+}
+
 #grid {
   width: 100%;
   height: 100%;
