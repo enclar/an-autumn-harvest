@@ -1,32 +1,81 @@
-#start-screen, #game-screen {
-  background-color: lavender;
-  width: 500px;
-  height: 500px;
-  overflow: hidden;
+@font-face {
+  font-family: Zorque;
+  src: url(fonts/zorque.otf);
 }
 
 @font-face {
-  font-family: DiloWorld;
-  src: url(fonts/dilo-world.ttf);
+  font-family: Nasalization;
+  src: url(fonts/nasalization-rg.otf);
+}
+
+#start-screen, #game-screen, #score-screen {
+  background-color: lavender;
+  width: 500px;
+  height: 575px;
+  overflow: hidden;
+}
+
+#game-screen {
+  height: 500px;
+}
+
+.msg {
+  position: absolute;
+  width: 250px;
+  height: 100px;
+  left: 122.5px;
+  top: 200px;
+  border: 5px solid navy;
+  background-color: papayawhip;
+  border-radius: 25px;
+  font-family: Zorque;
+  color: navy;
+  font-size: 35px;
+  text-align: center;
+  line-height: 100px;
+  z-index: 10;
+}
+
+#score {
+  position: absolute;
+  top: 508px;
+  background-color: papayawhip;
+  width: 500px;
+  height: 75px;
+  font-family: Zorque;
+  color: navy;
+  font-size: 30px;
+  text-align: center;
+  line-height: 75px;
+}
+
+h1 {
+  font-family: Zorque;
+  font-size: 50px;
+  color:navy;
+  text-align: center;
 }
 
 #welcome-msg {
-  font-family: DiloWorld;
-  font-size: 60px;
-  color:navy;
-  text-align: center;
-  margin-top: 100px;
+  margin-top: 150px;
+}
+
+h2 {
+  margin-top: 24px;
+  font-family: Zorque;
 }
 
 #start-btn {
   position: absolute;
   width: 150px;
   height: 75px;
-  background-color: palegoldenrod;
+  background-color: whitesmoke;
   top: 250px;
   left: 175px;
   text-align: center;
   color: navy;
+  border: 2px solid navy;
+  border-radius: 20px;
   cursor: pointer;
 }
 
@@ -90,3 +139,19 @@
   transform-origin: 1px 600px;
 }
 
+#return {
+  font-family: Zorque;
+  font-size: 25px;
+  color: navy;
+  background-color: whitesmoke;
+  text-align: center;
+  width: 250px;
+  height: 50px;
+  line-height: 50px;
+  cursor: pointer;
+  position: absolute;
+  left: 124px;
+  top: 500px;
+  border: 2px solid navy;
+  border-radius: 20px;
+}
