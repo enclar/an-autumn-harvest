@@ -310,6 +310,20 @@ const reloadShooter = () => {
   console.log("Reloaded shooter bubble");
 };
 
+//! Function to check if the game should end
+const checkGameState = () => {
+  // Check if there are any bubbles left on the screen
+  if (bubbleGrid.length == 0) {
+    reloadShooter();
+    console.log("The game has ended!");
+    //* Insert function to show score board
+  } else { // The game should go on
+    reloadShooter();
+    possibleLandingCoords = [];
+    colorCluster = [];
+  };
+};
+
 
 //* LOAD AFTER DOM HAS LOADED
 $(() => {
@@ -365,11 +379,8 @@ $(() => {
         removeCluster(colorCluster);
       };
 
-      // Reload shooter bubble, possible landing coords and color cluster
-      reloadShooter();
-      possibleLandingCoords = [];
-      colorCluster = [];
-
+      // Check the game state
+      checkGameState();
     };
   });
 
