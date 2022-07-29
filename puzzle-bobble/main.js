@@ -126,14 +126,16 @@ const rotateTrajectory = (angle) => {
 };
 
 //! Function to check which is the lowest row that the bubble can land in
-// const firstEmptyRow = () => {
-//   let emptyRow = 0;
-//   for (let i=0; i<9; i++) {
-//     if ($rows.eq(i).children().length === 0) {
-//       return emptyRow = i;
-//     };
-//   };
-// };
+const firstEmptyRow = () => {
+  let emptyRow = 0;
+  for (let i=0; i<9; i++) {
+    if ($rows.eq(i).children().length === 0) {
+      emptyRow = i;
+      console.log(`The highest empty row is ${emptyRow}`);
+      return emptyRow;
+    };
+  };
+};
 
 //! Function to convert angle from degrees to radians
 const convertAngle = (angle) => {
@@ -144,72 +146,148 @@ const convertAngle = (angle) => {
   return angle * (Math.PI / 180);
 };
 
-//! Function to find possible positions a bubble could land in
-const landingCoords = () => {
-  // Checking that the first empty row is correct
-  // console.log(`The first empty row is row${emptyRow}`);
+//! Function to check if there are bubbles above 
+const checkTriBubbles = (row, col) => {
+  const toCheck = [`${row}${col}`, `${row+1}${col+1}`, `${row+1}${col-1}`];
+  let finalLandingCoord;
 
+  // If grid does not contain bubble at intended position, but includes bubble(s) above
+  if (!bubbleGrid.includes(toCheck[0]) && (bubbleGrid.includes(toCheck[1]) || bubbleGrid.includes(toCheck[2]))) {
+    finalLandingCoord = toCheck[0];
+    console.log(`The final landing coord will be ${toCheck[0]}`);
+    return finalLandingCoord;
+  };
+};
+
+//! Function to check possible positions and simultaneously see if it's correct
+const landingPosition = (row) => { // Argument taken is the first empty row from the top
   // Defining variables
   let yDist, xDist, col;
 
-  // Converting the angle from deg to rad
+  // Converting the angle from degrees to radians
   const angleInRadians = convertAngle(rotateAngle);
-  console.log(`The trajectory angle is ${rotateAngle}deg and ${angleInRadians}rad`);
 
-  // Running through each row
-  for (let row=0; row<=9; row++) {
-    yDist = ((9-row) * 50) + 25;
-    xDist = yDist * Math.tan(angleInRadians);
+  // Running a for loop to check backwards from the first empty row
+  for (let i=row; i>=0; i--) {
+    yDist = (9-row) * 50;
+    xDist = yDist / Math.tan(angleInRadians);
+    col = Math.round(xDist / 25);
 
-    if (rotateAngle >= 0) {
-      col = Math.round((xDist)/25);
-      console.log(col);
-      if (row%2 == 0 && col%2 != 0 && col>=0 && col<=9) {
-        col += 9;
-        possibleLandingCoords.unshift(`${row}${col}`);
-      } else if (row%2 != 0 && col%2 == 0 && col>=0 && col<=8) {
-        col += 9;
-        possibleLandingCoords.unshift(`${row}${col}`);
+    if (rotateAngle >= 0) { // If the trajectory is towards the right
+      if (row%2==0) {
+        if (col%2!=0 && col>=0 && col<=9) {
+          col += 9;
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        } else if (col%2==0 && col>=0 && col<=9) {
+          col = Math.floor(xDist / 25) + 9;
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        }
+      } else if (row%2!=0) {
+        if (col%2==0 && col>=0 && col<=9) {
+          col += 9;
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        } else if (col%2!=0 && col>=0 && col<=9) {
+          col = Math.floor(xDist / 25) + 9;
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        }
       }
     } else if (rotateAngle < 0) {
-      col = Math.round((xDist)/25);
-      if (row%2 == 0 && col%2 != 0 && 9-col>=0 && 9-col<=9) {
-        col = 9-col;
-        possibleLandingCoords.unshift(`${row}${col}`);
-      } else if (row%2 != 0 && col%2 == 0 && 9-col>=0 && 9-col<=8) {
-        col = 9-col;
-        possibleLandingCoords.unshift(`${row}${col}`);
+      if (row%2==0) {
+        if (col%2!=0 && 9-col>=0 && 9-col<=9) {
+          col = 9-col;
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        } else if (col%2!=0 && col>=0 && col<=9) {
+          col = 9 - Math.floor(xDist / 25);
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        }
+      } else if (row%2!=0) {
+        if (col%2==0 && col>=0 && col<=9) {
+          col = 9-col;
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        } else if (col%2!=0 && col>=0 && col<=9) {
+          col = 9 - Math.floor(xDist / 25);
+          console.log(`We are checking ${row}${col}`);
+          return checkTriBubbles(row, col);
+        };
       };
     };
   };
-  // Log and return an array of the possible landing coordinates
-  console.log(`These are the possible landing coordinates: ${possibleLandingCoords}`);
-  return possibleLandingCoords;
 };
+
+//! Function to find possible positions a bubble could land in
+// const landingCoords = () => {
+//   // Checking that the first empty row is correct
+//   // console.log(`The first empty row is row${emptyRow}`);
+
+//   // Defining variables
+//   let yDist, xDist, col;
+
+//   // Converting the angle from deg to rad
+//   const angleInRadians = convertAngle(rotateAngle);
+//   console.log(`The trajectory angle is ${rotateAngle}deg and ${angleInRadians}rad`);
+
+//   // Running through each row
+//   for (let row=0; row<=9; row++) {
+//     yDist = ((9-row) * 50) + 25;
+//     xDist = yDist * Math.tan(angleInRadians);
+
+//     if (rotateAngle >= 0) {
+//       col = Math.round((xDist)/25);
+//       console.log(col);
+//       if (row%2 == 0 && col%2 != 0 && col>=0 && col<=9) {
+//         col += 9;
+//         possibleLandingCoords.unshift(`${row}${col}`);
+//       } else if (row%2 != 0 && col%2 == 0 && col>=0 && col<=8) {
+//         col += 9;
+//         possibleLandingCoords.unshift(`${row}${col}`);
+//       }
+//     } else if (rotateAngle < 0) {
+//       col = Math.round((xDist)/25);
+//       if (row%2 == 0 && col%2 != 0 && 9-col>=0 && 9-col<=9) {
+//         col = 9-col;
+//         possibleLandingCoords.unshift(`${row}${col}`);
+//       } else if (row%2 != 0 && col%2 == 0 && 9-col>=0 && 9-col<=8) {
+//         col = 9-col;
+//         possibleLandingCoords.unshift(`${row}${col}`);
+//       };
+//     };
+//   };
+//   // Log and return an array of the possible landing coordinates
+//   console.log(`These are the possible landing coordinates: ${possibleLandingCoords}`);
+//   return possibleLandingCoords;
+// };
+
 
 //! Function to check if the possible positions are empty
-const finalPosition = (arr) => { // Argument taken is an array of possible landing coords
-  // Create a variable to store the final position where the bubble should land
-  let finalLandingCoord;
+// const finalPosition = (arr) => { // Argument taken is an array of possible landing coords
+//   // Create a variable to store the final position where the bubble should land
+//   let finalLandingCoord;
 
-  // Running a for loop to check which positions are alr filled
-  for (let i=0; i<arr.length; i++) {
-    if (bubbleGrid.includes(arr[i])) { // If the grid has a bubble in this position
-      console.log(`There's a bubble at ${arr[i]}`)
-      finalLandingCoord = arr[i-1]; // Landing coord should be position before it
-      colorCluster.push(finalLandingCoord); // Add coord for cluster checking
-      console.log(`The bubble will land on ${finalLandingCoord}`);
-      return finalLandingCoord;
-    } else if (i == arr.length-1) {
-      finalLandingCoord = arr[i];
-      colorCluster.push(finalLandingCoord); // Add coord for cluster checking
-      console.log(`The bubble will land on ${finalLandingCoord}`);
-      return finalLandingCoord; 
-    } else {
-      console.log(`There is no bubble at ${arr[i]}!`);
-    };
-  };
-};
+//   // Running a for loop to check which positions are alr filled
+//   for (let i=0; i<arr.length; i++) {
+//     if (bubbleGrid.includes(arr[i])) { // If the grid has a bubble in this position
+//       console.log(`There's a bubble at ${arr[i]}`)
+//       finalLandingCoord = arr[i-1]; // Landing coord should be position before it
+//       colorCluster.push(finalLandingCoord); // Add coord for cluster checking
+//       console.log(`The bubble will land on ${finalLandingCoord}`);
+//       return finalLandingCoord;
+//     } else if (i == arr.length-1) {
+//       finalLandingCoord = arr[i];
+//       colorCluster.push(finalLandingCoord); // Add coord for cluster checking
+//       console.log(`The bubble will land on ${finalLandingCoord}`);
+//       return finalLandingCoord; 
+//     } else {
+//       console.log(`There is no bubble at ${arr[i]}!`);
+//     };
+//   };
+// };
 
 //! Function to shoot bubble
 const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
@@ -350,7 +428,8 @@ const checkGameState = () => {
 $(() => {
 
   //! Hide the game screen and score screen
-  $("#game-screen").hide();
+  $("#start-screen").hide();
+  // $("#game-screen").hide();
   $("#score-screen").hide();
 
   //! Adding event listener to start game
@@ -382,48 +461,53 @@ $(() => {
   });
 
   //! Event listener to shoot
-  $(window).on("keydown", (event) => {
+  // $(window).on("keydown", (event) => {
+  //   if (event.which === 32) { // Listening for pressdown of spacebar
+  //     // Check the possible landing coords
+  //     const plc = landingCoords(); // Will return an array of possible landing coords
+      
+  //     // Check which is the highest available landing coord
+  //     const flc = finalPosition(plc); // Will return a str of the landing coord
+
+  //     // Shoot the bubble into the position
+  //     shootBubble(flc);
+
+  //     //! Run these functions after a certain delay (1000ms)
+  //     setTimeout(() => {
+  //       // Add the shooter bubble into the grid
+  //       addShooterToGrid(flc);
+      
+  //       // Check if the bubble is in a color cluster
+  //       checkCluster(flc);
+        
+  //       // Remove bubbles if cluster if 3 or more
+  //       if (colorCluster.length >= 3) {
+  //         removeCluster(colorCluster);
+  //       };
+        
+  //       // Check the game state
+  //       checkGameState();
+  //     }, 1000);
+  //   };
+  // });
+
+  // $(window).on("keydown", (event) => {
+  //   if (event.which === 32) {
+  //     // Check for the first empty row
+  //     const fer = firstEmptyRow();
+
+  //     // Get the landing position
+  //     landingPosition(fer);
+
+  //     // Shoot the bubble into position
+  //     // shootBubble(flp);
+  //   };
+  // });
+
+    $(window).on("keydown", (event) => {
     if (event.which === 32) { // Listening for pressdown of spacebar
-      // Check the possible landing coords
-      const plc = landingCoords(); // Will return an array of possible landing coords
-      
-      // Check which is the highest available landing coord
-      const flc = finalPosition(plc); // Will return a str of the landing coord
-
-      // Shoot the bubble into the position
-      shootBubble(flc);
-
-      // Add the shooter bubble into the grid
-      // addShooterToGrid(flc);
-
-      // Check if the bubble is in a color cluster
-      // checkCluster(flc);
-
-      // Remove bubbles if cluster if 3 or more
-      // if (colorCluster.length >= 3) {
-      //   removeCluster(colorCluster);
-      // };
-
-      // Check the game state
-      // checkGameState();
-
-      //! Run these functions after a certain delay
-      setTimeout(() => {
-        // Add the shooter bubble into the grid
-        addShooterToGrid(flc);
-      
-        // Check if the bubble is in a color cluster
-        checkCluster(flc);
-        
-        // Remove bubbles if cluster if 3 or more
-        if (colorCluster.length >= 3) {
-          removeCluster(colorCluster);
-        };
-        
-        // Check the game state
-        checkGameState();
-      }, 1000);
-      
+      // Log the first empty row
+      firstEmptyRow();
     };
   });
 
