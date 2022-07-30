@@ -103,19 +103,19 @@ h2 {
 }
 
 .red {
-  background-color: indianred;
+  background-color: rgb(238, 176, 176);
 }
 
 .yellow {
-  background-color: yellow;
+  background-color: rgb(233, 225, 157);
 }
 
 .green {
-  background-color: yellowgreen
+  background-color: rgb(172, 236, 206)
 }
 
 .blue {
-  background-color: cornflowerblue;
+  background-color: rgb(167, 219, 228);
 }
 
 #shooter {
