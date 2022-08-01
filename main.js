@@ -467,7 +467,9 @@ $(() => {
 
           // If bubbles were removed
           checkForFloaters(bubbleGrid);
-          removeCluster(floaters);
+          setTimeout(() => {
+            removeCluster(floaters);
+          }, 250);
         };
         
         // Check the game state
@@ -476,6 +478,6 @@ $(() => {
     };
   });
 
-  $("#return").on("click", restartGame);
+  // $("#return").on("click", restartGame);
 
 });
