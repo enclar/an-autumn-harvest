@@ -11,6 +11,7 @@ let optionalLandingCoords = [];
 let colorCluster = []; // Array for temp bubble storage to check for clusters
 let floaters = []; // Array for temp bubble storage to check for floaters
 let tempFloaters = []; // Array for temp bubble storage to check for floaters
+let notFloaters = []; // Array for temp bubbles storage when a bubble is not a floater
 let counter = 0;
 
 
@@ -297,7 +298,7 @@ const checkCluster = (coord) => { // Argument is coords of a bubble to check
       };
     }
   };
-  console.log(colorCluster);
+  // console.log(colorCluster);
 };
 
 //! Function to remove cluster (if applicable)
@@ -318,39 +319,27 @@ const removeCluster = (arr) => { // Argument taken is an array of clustered bubb
   $("#score").text(`SCORE: ${counter}`);
 };
 
-//! Function to reorder the remaining bubbles after checking for color clusters
-const reorderBubbles = () => {
-  // Creating a new array with the remaining coords in the grid after any clusters have been eliminated
-  const remainingBubbles = bubbleGrid;
-
-  // Sorting the bubbles numerically from lowest to highest
-  remainingBubbles.sort((a,b) => {
-    const num1 = parseInt(a);
-    const num2 = parseInt(b);
-
-    if (num1 > num2) {
-      return -1;
-    }
-    if (num1 < num2) {
-      return 1;
-    };
-  });
-
-  console.log(`The remaining coords are: ${remainingBubbles}`);
-  return remainingBubbles;  
-};
-
 //! Function to check through the array and see which bubbles can be removed
 const checkForFloaters = (arr) => { // Argument taken is an array of bubbles remaining in the grid
+  floaters = [];
+  notFloaters = [];
 
   // Running through a for loop of each coord in the array
   for (const coord of arr) {
-    // Checking if the bubble has already been tagged as a floater
-    if (!floaters.includes(coord)) {
+    // Ensure bubble has not been classified as a floater/non-floater
+    if (!floaters.includes(coord) && !notFloaters.includes(coord)) {
       // Adding the coord as the first item in the array
-      // console.log(`Let's check ${coord}`);
       tempFloaters = [coord];
       recursiveCheck(arr, coord);
+      
+      // Check if any of the bubbles are in row 0
+      const row0 = tempFloaters.some((coord) => {return coord[0] == 0});
+
+      if (row0 == true) {
+        notFloaters = notFloaters.concat(tempFloaters);
+      } else {
+        floaters = floaters.concat(tempFloaters);
+      }
     };
   };
   console.log(`These are the floaters to be removed: ${floaters}`);
@@ -359,7 +348,6 @@ const checkForFloaters = (arr) => { // Argument taken is an array of bubbles rem
 
 //! Function to check which bubbles are floaters
 const recursiveCheck = (arr, coord) => {
-
   const row = parseInt(coord[0]);
   const col = parseInt(coord.substr(1));
 
@@ -368,25 +356,14 @@ const recursiveCheck = (arr, coord) => {
 
   // Running through each of the 6 coords
   for (let coord of bubblesToCheck) {
-
     // Check if there is a bubble at that coordinate and if it's already been tagged as a floater bubble
-    if (arr.includes(coord) && !tempFloaters.includes(coord) && !floaters.includes(coord)) {
-
-      const row1 = parseInt(coord[0]);
-
-      // Check if it's at the top of the board
-      if (row1 == 0) {
-        // If if it is, none of the bubbles connected to it will drop
-        return tempFloaters = [];
-      } else if (row1 != 0) {
-        console.log(`${coord} might be a floater!`)
-        tempFloaters.push(coord);
-        recursiveCheck(coord);
-      };
+    if (arr.includes(coord) && !tempFloaters.includes(coord) && !floaters.includes(coord) && !notFloaters.includes(coord)) {
+      tempFloaters.push(coord);
+      recursiveCheck(arr, coord);
     };
   };
-  // Adding any new floater bubbles into the main floater array
-  floaters = floaters.concat(tempFloaters);
+  console.log(`These are the possible floaters ${tempFloaters}`);
+  return tempFloaters;
 };
 
 //! Function to 'reload' the shooter
@@ -485,16 +462,13 @@ $(() => {
         // Remove bubbles if cluster if 3 or more
         if (colorCluster.length >= 3) {
           removeCluster(colorCluster);
+          
+          console.log(`These are the bubbles in the grid: ${bubbleGrid}`);
+
+          // If bubbles were removed
+          checkForFloaters(bubbleGrid);
+          removeCluster(floaters);
         };
-
-        // Duplicate the bubbleGrid array and sort is in decreasing order
-        const rb = reorderBubbles();
-
-        // Check the remaining bubbles for any floaters
-        const f = checkForFloaters(rb);
-
-        // Remove bubbles if they are floating
-        removeCluster(f);
         
         // Check the game state
         checkGameState();
