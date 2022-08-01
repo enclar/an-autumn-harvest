@@ -1,13 +1,16 @@
-import $ from "jquery";
+// import $ from "jquery";
 
 //* DEFINING VARIABLES
 const $rows = $(".row"); // Variable to store all divs with row class
 let bubbleGrid = []; // Array to store coords of all bubbles in the grid
+let bubbleColors = [];
 const colors = ["red", "yellow", "blue", "green"]; // Array to hold bubble colors
 let rotateAngle = 0; // Variable to store angle of rotation for trajectory
 let possibleLandingCoords = []; // Array to hold possible landing points when a bubble is shot
 let optionalLandingCoords = [];
 let colorCluster = []; // Array for temp bubble storage to check for clusters
+let floaters = []; // Array for temp bubble storage to check for floaters
+let tempFloaters = []; // Array for temp bubble storage to check for floaters
 let counter = 0;
 
 
@@ -17,6 +20,15 @@ const startGame = () => {
   $("#start-screen").hide();
   $("#game-screen").show();
   $("#score-screen").hide();
+
+  //! Adding div grid
+  addDivs(19);
+
+  //! Generating a grid with 9/10 bubbles per row
+  addBubbleGrid(5, 20);
+  
+  //! Generating shooter bubble
+  addShooter();
 
   // Resetting all the values
   rotateAngle = 0;
@@ -55,32 +67,12 @@ const randomColor = (arr) => {
   return arr[ranNum];
 };
 
-//! Function to generate a bubble
-// const addBubble = () =>  {
-//   const $bubble = $("<div>").addClass("bubble");
-//   return $bubble;
-// };
-
-//! Creating a bubble class
-// class Bubble {
-//   constructor(row, col, coords, color) {
-//     this.row = row;
-//     this.col = col;
-//     this.coords = coords;
-//     this.color = color;
-//   }
-//   getColor() {
-//     return this.color
-//   }
-// };
-
 //! Function to generate a bubble in the bubble grid
 const addBubbleInGrid = (row, col) => { // Argument taken is row and col data
   // Selecting the corresponding div which will contain a bubble
   const $bubble = $rows.eq(row).children().eq(col);
 
   // Giving it a bubble class so it takes on the respective properties
-  $bubble.addClass("bubble");
   $bubble.addClass(randomColor(colors));
 
   // Setting the coordinates of the bubble
@@ -89,6 +81,7 @@ const addBubbleInGrid = (row, col) => { // Argument taken is row and col data
 
   // Adding bubble coordinates into array
   bubbleGrid.push(`${row}${col}`);
+  bubbleColors.push($bubble.attr("class"));
   console.log(`Appended a bubble at ${[row, col]}`);
 };
 
@@ -98,11 +91,11 @@ const addBubbleGrid = (rows, cols) => { // Argument taken is total num of rows a
   for (let i=0; i<rows; i++) {
 
     // Checking if the row is odd or even
-    if (i%2 == 0) { // In even row, only even cols should have bubbles
+    if (i%2 == 0) { // In even row only even cols should have bubbles
       for (let j=0; j<cols-1; j+=2) {
         addBubbleInGrid(i, j);
       };
-    } else { // In odd row, only odd cols should have bubbles
+    } else { // In odd row only odd cols should have bubbles
       for (let j=1; j<cols-2; j+=2) {
         addBubbleInGrid(i, j);
       };
@@ -110,6 +103,7 @@ const addBubbleGrid = (rows, cols) => { // Argument taken is total num of rows a
   };
   // Logging the coordinates of all the bubbles in the grid
   console.log(`These are the coordinates of bubbles in the grid: ${bubbleGrid}`);
+  console.log(`These are the bubble colors present: ${bubbleColors}`);
 };
 
 //! Function to generate shooter bubble
@@ -117,8 +111,8 @@ const addShooter = () => {
   // Selecting the corresponding div
   const $shooter = $rows.eq(-1).children().eq(9);
 
-  // Adding properties to it
-  $shooter.addClass("bubble");
+  // Adding color property to it and check if bubbles of that color are still in the grid
+  let color = randomColor(colors);
   $shooter.addClass(randomColor(colors));
 
   // Attaching the shooter-bubble id to the shooter bubble
@@ -134,32 +128,13 @@ const rotateTrajectory = (angle) => {
   $("#trajectory").css("transform", `rotate(${angle}deg)`);
 };
 
-//! Function to check which is the lowest row that the bubble can land in
-// None of the divs are empty any more!! So this will not work!!
-// const firstEmptyRow = () => {
-//   let emptyRow = 0;
-//   for (let i=0; i<9; i++) {
-//     if ($rows.eq(i).children().length === 0) {
-//       emptyRow = i;
-//       console.log(`The highest empty row is ${emptyRow}`);
-//       return emptyRow;
-//     };
-//   };
-// };
-
 //! Function to convert angle from degrees to radians
 const convertAngle = (angle) => {
-  // Checking if angle is negative so it can be converted if needed
-  if (angle < 0) {
-    angle = -(angle);
-  }
   return angle * (Math.PI / 180);
 };
 
 //! Function to find possible positions a bubble could land in
 const landingCoords = () => {
-  // Checking that the first empty row is correct
-  // console.log(`The first empty row is row${emptyRow}`);
 
   // Defining variables
   let yDist, xDist, col;
@@ -169,37 +144,43 @@ const landingCoords = () => {
   console.log(`The trajectory angle is ${rotateAngle}deg and ${angleInRadians}rad`);
 
   // Running through each row
-  for (let row=0; row<=9; row++) {
-    yDist = ((9-row) * 50) + 25;
+  for (let row=8; row>=0; row--) {
+    yDist = (9-row) * 50;
     xDist = yDist * Math.tan(angleInRadians);
     col = Math.round(xDist / 25);
 
-    if (rotateAngle >= 0) {
-
-      if (row%2 != col%2 && col>=0 && col<=9) {
+    if (row%2 == 0) { // Checking for even row
+      if (col%2 != 0 && Math.abs(col) >= 0 && Math.abs(col) <= 9) { // Checking for odd column
         col += 9;
-        possibleLandingCoords.unshift(`${row}${col}`);
-      } else if (row%2 == col%2 && col>=0 && col<=10) {
-        col += 8;
-        optionalLandingCoords.unshift(`${row}${col}`);
-      }
-    } else if (rotateAngle < 0) {
-      if (row%2 != col%2 && 9-col>=0 && 9-col<=9) {
-        col = 9-col;
-        possibleLandingCoords.unshift(`${row}${col}`);
-      } else if (row%2 == col%2 && 8-col>=0 && 8-col<=9) {
-        col = 8-col;
-        optionalLandingCoords.unshift(`${row}${col}`);
-      }
+        possibleLandingCoords.push(`${row}${col}`);
+      } else if (col%2 == 0 && Math.abs(col) >= 0 && Math.abs(col) <= 9) { // Checking for even column
+        if (col == Math.floor(xDist / 25)) { // Check if bubble was rounded up
+          col += 10; // Push it to the higher even col
+          optionalLandingCoords.push(`${row}${col}`);
+        } else {
+          col += 8; // Push it to the lower even col
+          optionalLandingCoords.push(`${row}${col}`);
+        };
+      };
+    } else if (row%2 !=0) { // Checking for odd row
+      if (col%2 == 0 && Math.abs(col) >= 0 && Math.abs(col) <= 8) {
+        col += 9;
+        possibleLandingCoords.push(`${row}${col}`);
+      } else if (col%2 != 0 && Math.abs(col) >= 0 && Math.abs(col) <= 8) {
+        if (col == Math.floor(xDist / 25)) {
+          col += 10;
+          optionalLandingCoords.push(`${row}${col}`);
+        } else {
+          col += 8;
+          optionalLandingCoords.push(`${row}${col}`);
+        };
+      };
     };
   };
-  // Log and return an array of the possible landing coordinates
-  // possibleLandingCoords.concat(optionalLandingCoords);
-  console.log(`These are the possible landing coordinates: ${possibleLandingCoords} and ${optionalLandingCoords}`);
-  possibleLandingCoords.concat(optionalLandingCoords);
+  possibleLandingCoords = possibleLandingCoords.concat(optionalLandingCoords);
+  console.log(`These are the possible landing coordinates: ${possibleLandingCoords}`);
   return possibleLandingCoords;
 };
-
 
 //! Function to check if the possible positions are empty
 const finalPosition = (arr) => {
@@ -210,31 +191,30 @@ const finalPosition = (arr) => {
   for (const coord of arr) {
     const row = parseInt(coord[0]);
     const col = parseInt(coord.substr(1));
-    // Other positions to check
-    const toCheck = [`${row-1}${col+1}`, `${row-1}${col-1}`];
 
-    if (!bubbleGrid.includes(coord)) {
-      console.log(`${coord} is not in the bubbleGrid array`);
-      // console.log(`We are checking for ${toCheck[0]} or ${toCheck[1]}`);
+    // Other positions to check
+    const toCheck = [`${row-1}${col+1}`, `${row-1}${col-1}`, `${row}${col-2}`, `${row}${col+2}`];
+
+    if (!bubbleGrid.includes(coord)) { // Ensuring that the position is empty
       if (bubbleGrid.includes(toCheck[0]) || bubbleGrid.includes(toCheck[1])) {
         finalLandingCoord = coord;
         colorCluster.push(finalLandingCoord);
         console.log(`The bubble will land on ${finalLandingCoord}`);
         return finalLandingCoord;
+      } else if (bubbleGrid.includes(toCheck[2]) && bubbleGrid.includes(toCheck[3])) {
+        finalLandingCoord = coord;
+        colorCluster.push(finalLandingCoord);
+        console.log(`The bubble will land on ${finalLandingCoord}`);
+        return finalLandingCoord;
+      } else if (row == 0) {
+        finalLandingCoord = coord;
+        colorCluster.push(finalLandingCoord);
+        console.log(`The bubble will land on ${finalLandingCoord}`);
+        return finalLandingCoord;
       };
-    } else if (arr.indexOf(coord) == arr.length-1 && !bubbleGrid.includes(coord)) {
-      finalLandingCoord = coord;
-      colorCluster.push(finalLandingCoord);
-      console.log(`The bubble will land on ${finalLandingCoord}`);
-      return finalLandingCoord;
-    } else if (row == 0) {
-      finalLandingCoord = coord;
-      colorCluster.push(finalLandingCoord);
-      console.log(`The bubble will land on ${finalLandingCoord}`);
-      return finalLandingCoord;
-    }
-  }
-}
+    };
+  };
+};
 
 //! Function to shoot bubble
 const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
@@ -261,6 +241,31 @@ const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
   };
 };
 
+//! Function to add bubble into bubble grid and out of shooter div
+const addShooterToGrid = (coord) => {
+  // Storing the color of the shooter bubble
+  const $shooterClass = $("#shooter-bubble").attr("class");
+  // console.log($shooterClass);
+
+  const row = parseInt(coord[0]);
+  const col = parseInt(coord.substr(1));  
+
+  // Identifying the new div which should contain the bubble
+  const $bubble = $rows.eq(row).children().eq(col);
+
+  // Assigning it the correct color
+  $bubble.attr("class", $shooterClass);
+
+  // Moving it to the correct position
+  $bubble.css("left", col*25);
+  $bubble.css("top", row*50);
+
+  // Adding this new coord to the arr containing coords of bubbles in the grid
+  bubbleGrid.push(`${row}${col}`);
+  // console.log(`Appended a bubble at ${row}${col}`);
+  // console.log(`These are the bubbles in the grid: ${bubbleGrid}`);
+};
+
 //! Function to check if shooter is in a color cluster
 const checkCluster = (coord) => { // Argument is coords of a bubble to check
   const row = parseInt(coord[0]);
@@ -284,7 +289,6 @@ const checkCluster = (coord) => { // Argument is coords of a bubble to check
   
       // Getting the color of each surrounding bubble
       const $checkingColor = $rows.eq(row1).children().eq(col1).attr("class")
-      // console.log(`The bubble we are looking at is ${row1}${col1} and the class we are trying to match is ${$checkingColor}`);
   
       // If the color is a match and the bubble is not inside the cluster array
       if ($checkingColor == $clusterColor && !colorCluster.includes(bubble)) {
@@ -314,30 +318,75 @@ const removeCluster = (arr) => { // Argument taken is an array of clustered bubb
   $("#score").text(`SCORE: ${counter}`);
 };
 
-//! Function to add bubble into bubble grid and out of shooter div
-const addShooterToGrid = (coord) => {
-  // Storing the color of the shooter bubble
-  const $shooterClass = $("#shooter-bubble").attr("class");
-  // console.log($shooterClass);
+//! Function to reorder the remaining bubbles after checking for color clusters
+const reorderBubbles = () => {
+  // Creating a new array with the remaining coords in the grid after any clusters have been eliminated
+  const remainingBubbles = bubbleGrid;
+
+  // Sorting the bubbles numerically from lowest to highest
+  remainingBubbles.sort((a,b) => {
+    const num1 = parseInt(a);
+    const num2 = parseInt(b);
+
+    if (num1 > num2) {
+      return -1;
+    }
+    if (num1 < num2) {
+      return 1;
+    };
+  });
+
+  console.log(`The remaining coords are: ${remainingBubbles}`);
+  return remainingBubbles;  
+};
+
+//! Function to check through the array and see which bubbles can be removed
+const checkForFloaters = (arr) => { // Argument taken is an array of bubbles remaining in the grid
+
+  // Running through a for loop of each coord in the array
+  for (const coord of arr) {
+    // Checking if the bubble has already been tagged as a floater
+    if (!floaters.includes(coord)) {
+      // Adding the coord as the first item in the array
+      // console.log(`Let's check ${coord}`);
+      tempFloaters = [coord];
+      recursiveCheck(arr, coord);
+    };
+  };
+  console.log(`These are the floaters to be removed: ${floaters}`);
+  return floaters;
+};
+
+//! Function to check which bubbles are floaters
+const recursiveCheck = (arr, coord) => {
 
   const row = parseInt(coord[0]);
-  const col = parseInt(coord.substr(1));  
+  const col = parseInt(coord.substr(1));
 
-  // Identifying the new div which should contain the bubble
-  const $bubble = $rows.eq(row).children().eq(col);
+  // Coordinates of 6 surrounding bubbles to check
+  const bubblesToCheck = [`${row}${col-2}`, `${row}${col+2}`, `${row-1}${col-1}`, `${row-1}${col+1}`, `${row+1}${col-1}`, `${row+1}${col+1}`];
 
-  // Assigning it the correct color
-  $bubble.attr("class", $shooterClass);
+  // Running through each of the 6 coords
+  for (let coord of bubblesToCheck) {
 
-  // Moving it to the correct position
-  $bubble.css("left", col*25);
-  $bubble.css("top", row*50);
+    // Check if there is a bubble at that coordinate and if it's already been tagged as a floater bubble
+    if (arr.includes(coord) && !tempFloaters.includes(coord) && !floaters.includes(coord)) {
 
-  // Adding this new coord to the arr containing coords of bubbles in the grid
-  bubbleGrid.push(`${row}${col}`);
-  console.log(`Appended a bubble at ${row}${col}`);
-  // console.log(`Appended a bubble at ${[row, col]}`);
-  console.log(`These are the bubbles in the grid: ${bubbleGrid}`);
+      const row1 = parseInt(coord[0]);
+
+      // Check if it's at the top of the board
+      if (row1 == 0) {
+        // If if it is, none of the bubbles connected to it will drop
+        return tempFloaters = [];
+      } else if (row1 != 0) {
+        console.log(`${coord} might be a floater!`)
+        tempFloaters.push(coord);
+        recursiveCheck(coord);
+      };
+    };
+  };
+  // Adding any new floater bubbles into the main floater array
+  floaters = floaters.concat(tempFloaters);
 };
 
 //! Function to 'reload' the shooter
@@ -388,13 +437,13 @@ $(() => {
   $("#start-btn").on("click", startGame);
 
   //! Adding div grid
-  addDivs(19);
+  // addDivs(19);
 
   //! Generating a grid with 9/10 bubbles per row
-  addBubbleGrid(5, 20);
+  // addBubbleGrid(5, 20);
 
   //! Generating shooter bubble
-  addShooter();
+  // addShooter();
 
   //! Event listener to change angle of shooting
   $(window).on("keydown", (event) => {
@@ -421,6 +470,7 @@ $(() => {
       // Check which is the highest available landing coord
       const flc = finalPosition(plc); // Will return a str of the landing coord
 
+
       // Shoot the bubble into the position
       shootBubble(flc);
 
@@ -436,6 +486,15 @@ $(() => {
         if (colorCluster.length >= 3) {
           removeCluster(colorCluster);
         };
+
+        // Duplicate the bubbleGrid array and sort is in decreasing order
+        const rb = reorderBubbles();
+
+        // Check the remaining bubbles for any floaters
+        const f = checkForFloaters(rb);
+
+        // Remove bubbles if they are floating
+        removeCluster(f);
         
         // Check the game state
         checkGameState();

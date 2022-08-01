@@ -41,4 +41,4 @@ COMPUTER RESPONSE
 * Score Screen
 GAME STATE
 1) Scoreboard
-2) Restart butto
+2) Restart button
