@@ -39,7 +39,10 @@ This logic uses a recursive function to check the bubbles around the one that wa
 
 ![Color Cluster Logic](./images/color-cluster.png)
 
-Let the bubble outlined in red be the one that was just shot into the grid
-1. Bubble that was just shot is the center bubble
-2. The 6 spaces around it are checked to see if they contains bubbles
-3. If any of the 6 bubbles is not already in the array and of the same color as the center, it is added into the array. It then becomes the center bubble and the 6 spaces around it are checked
+Let the center bubble in the left diagram be the one that was just shot into the grid
+1. Check the 6 spaces around the center bubble
+2. If any of the 6 spaces contains a bubble which is the same color as the center and not in the array, it is added into the array
+3. Steps 1-3 are then repeated with that bubble as the new center bubble (As shown in diagram on the right)
+4. This process continues until there are no more bubbles to be checked
+5. If the array contains 3 or more bubbles when the function has stopped running, they will pop and be removed
+6. As shown in the above diagram, bubbles with a red 'X' in the center will never be checked as there is not way to link them to the original center bubble
