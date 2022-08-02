@@ -1,4 +1,5 @@
-# An Autumnal Harvest - Inspired by Puzzle Bobble
+# A Puzzle-Bobble Inspired Game
+![Puzzle Bobble](https://i0.wp.com/www.thexboxhub.com/wp-content/uploads/2018/12/neogeo-puzzle-bobble.jpeg?fit=1920%2C1080&ssl=1)
 
 ## About The Game
 ### History and Significance
@@ -7,8 +8,6 @@ Puzzle Bobble is a tile-matching puzzle arcade game developed and published by T
 It features a screen filled with multi-coloured bubbles which players must attempt to clear within a given timeframe by shooting more bubbles and making color matches.
 
 Due to time constraints, some simplifications have been made, although core functionality is still present. I hope to expand the basic gameplay to include added functionality in the future.
-
-Growing up, I didn't have much of an interest in playing games and this was the only one that would catch my attention every time I was brought to an arcade. Recreating this childhood favourite was definitely an exciting challenge and I really enjoyed the process.
 
 ### Gameplay and Instructions
 The game begins with a rectangular arena filled with multi-colored bubbles. At the bottom of the arena, the player controls a pointer which aims and fires bubbles into the arena. The color of the bubbles to be fired is randomly generated and chosen from a pre-specified selection of colours.
@@ -29,4 +28,3 @@ When the game finishes, players will exit to the main screen to restart the game
 The playing arena consists of 9 rows, each containing 10 divs
 
 ### Logic for shooting
-![Puzzle Bobble](https://i0.wp.com/www.thexboxhub.com/wp-content/uploads/2018/12/neogeo-puzzle-bobble.jpeg?fit=1920%2C1080&ssl=1)
