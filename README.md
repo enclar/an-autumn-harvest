@@ -28,3 +28,18 @@ When the game finishes, players will exit to the main screen to restart the game
 The playing arena consists of 9 rows, each containing 10 divs
 
 ### Logic for shooting
+
+### Logic for bubbles to pop
+There are two possible scenarios for a bubble to pop:
+1. It is within a color cluster of 3 or more of the same color
+2. It is left 'floating' (no attachment to the top of the grid) after a cluster has popped
+
+#### Color Cluster of 3 or more
+This logic uses a recursive function to check the bubbles around the one that was just shot in order to identify if a color cluster has been formed
+
+![Color Cluster Logic](./images/color-cluster.png)
+
+Let the bubble outlined in red be the one that was just shot into the grid
+1. Bubble that was just shot is the center bubble
+2. The 6 spaces around it are checked to see if they contains bubbles
+3. If any of the 6 bubbles is not already in the array and of the same color as the center, it is added into the array. It then becomes the center bubble and the 6 spaces around it are checked
