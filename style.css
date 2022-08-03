@@ -13,7 +13,7 @@
   width: 500px;
   height: 575px;
   overflow: hidden;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 
 #game-screen {
@@ -70,7 +70,9 @@ h2 {
   position: absolute;
   width: 150px;
   height: 75px;
-  left: 45%;
+  /* left: 45%; */
+  top: 250px;
+  left: 175px;
   background-color: whitesmoke;
   top: 250px;
   text-align: center;
