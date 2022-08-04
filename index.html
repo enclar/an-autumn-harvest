@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzle Bobble</title>
+    <title>An Autumn Harvest</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="main.js" type="module" charset="utf-8"></script>
@@ -12,15 +12,21 @@
   <body>
 
     <div id="start-screen">
-      <h1 id="welcome-msg">Puzzle Bobble</h1>
-      <div id="start-btn">
-        <h2 id="start-txt">START</h2>
+      <h1 id="welcome-msg">AN AUTUMN HARVEST</h1>
+      <p id="intro">IT'S HARVEST SEASON ON THE FARM! THE FARMER NEEDS YOUR HELP TO COLLECT HIS CROPS BEFORE THE COLD WEATHER AND FROSTBITE SET IN</p>
+      <button id="start-btn">LET'S HARVEST!</button>
+      <button id="htp-btn">HOW TO PLAY</button>
+      <div id="htp">
+        <button id="x-btn">X</button>
+        <img id="htp-img" src="./images/instructions.png" />
       </div>
     </div>
 
     <div id="game-screen">
+
       <div class="msg" id="lose">YOU LOSE</div>
       <div class="msg" id="win">YOU WIN</div>
+      
       <div id="grid">
         <div class="row even"></div>
         <div class="row odd"></div>
@@ -36,10 +42,10 @@
       <div id="score">SCORE: 0</div>
     </div>
 
-  <div id="score-screen">
+  <!-- <div id="score-screen">
     <h1>HIGHSCORES</h1>
     <div id="return">BACK TO START</div>
-  </div>
+  </div> -->
     
   </body>
 </html>

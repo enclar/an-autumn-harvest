@@ -1,24 +1,50 @@
 @font-face {
-  font-family: Zorque;
-  src: url(fonts/zorque.otf);
+  font-family: Diskun;
+  src: url(./fonts/Diskun-epmp.ttf);
 }
 
 @font-face {
-  font-family: Nasalization;
-  src: url(fonts/nasalization-rg.otf);
+  font-family: Warioland;
+  src: url(./fonts/Warioland4chmc-VApe.ttf);
+}
+
+@font-face {
+  font-family: BB;
+  src: url(/fonts/BarcadeBrawlRegular-plYD.ttf);
+}
+
+@font-face {
+  font-family: Edensor;
+  src: url(/fonts/Edensor-Free.otf);
+}
+
+@font-face {
+  font-family: Little Miss;
+  src: url(./fonts/LittleMissLoudonBold-VGO9l.ttf);
+}
+
+body {
+  background: rgb(234, 248, 253);
 }
 
 #start-screen, #game-screen, #score-screen {
+  position: relative;
   background-color: lavender;
   width: 500px;
   height: 575px;
   overflow: hidden;
-  /* margin: 0 auto; */
+  margin: 0 auto;
 }
 
-#game-screen {
-  height: 500px;
+#start-screen {
+  background: url(./images/start-screen.png);
+  width: 500px;
+  height: 600px;
 }
+
+/* #game-screen {
+  height: 500px;
+} */
 
 .msg {
   position: absolute;
@@ -39,48 +65,103 @@
 
 #score {
   position: absolute;
-  top: 508px;
-  background-color: papayawhip;
+  top: 500px;
+  background-color: whitesmoke;
   width: 500px;
-  height: 75px;
-  font-family: Zorque;
+  height: 100px;
+  font-family: Warioland;
   color: navy;
   font-size: 30px;
   text-align: center;
-  line-height: 75px;
-}
-
-h1 {
-  font-family: Zorque;
-  font-size: 50px;
-  color:navy;
-  text-align: center;
+  line-height: 78px;
 }
 
 #welcome-msg {
-  margin-top: 150px;
+  font-family: BB;
+  font-size: 23px;
+  color:rgb(59, 59, 59);
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 28px;
 }
 
-h2 {
+#intro {
+  font-family: Warioland;
+  text-align: center;
+  width: 325px;
+  margin: 0 auto;
+  margin-top: 0px;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+/* h2 {
   margin-top: 24px;
   font-family: Zorque;
+} */
+
+#start-btn, #htp-btn {
+  width: 200px;
+  height: 75px;
+  font-size: 15px;
+  font-family: BB;
+  color: rgb(59, 59, 59);
+  background: whitesmoke;
+  border: none;
+  border-radius: 15px;
+  margin: 85px 150px 0 150px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  line-height: 20px;
 }
 
-#start-btn {
+#htp-btn {
+  margin: 15px 150px 0 150px;
+  font-size: 12px;
+}
+
+#htp {
+  width: 350px;
+  height: 400px;
+  background-color: white;
   position: absolute;
-  width: 150px;
+  top: 100px;
+  left: 75px;
+  border-radius: 20px;
+}
+
+#x-btn {
+  position: absolute;
+  left: 315px;
+  top: 10px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-family: Warioland;
+  font-size: 28px;
+}
+
+#htp-img {
+  width: 350px;
+  position: absolute;
+  top: 30px;
+}
+
+/* #start-btn, #htp-btn {
+  position: absolute;
+  width: 200px;
   height: 75px;
-  /* left: 45%; */
-  top: 250px;
-  left: 175px;
   background-color: whitesmoke;
   top: 250px;
   text-align: center;
   color: navy;
-  border: 2px solid navy;
-  border-radius: 20px;
+  border-radius: 15px;
   cursor: pointer;
 }
+
+#htp-btn {
+  top: 350px;
+} */
 
 #grid {
   width: 100%;
@@ -106,19 +187,19 @@ h2 {
 }
 
 .red {
-  background-color: rgb(238, 176, 176);
+  background: url(./images/strawberry.png);
 }
 
 .yellow {
-  background-color: rgb(233, 225, 157);
+  background: url(./images/lemon.png);
 }
 
 .green {
-  background-color: rgb(172, 236, 206)
+  background: url(./images/pear.png);
 }
 
 .blue {
-  background-color: rgb(167, 219, 228);
+  background: url(./images/blueberry.png);
 }
 
 #shooter {
@@ -138,7 +219,7 @@ h2 {
   height: 600px;
   position: relative;
   left: 249px;
-  bottom: 625px;
+  bottom: 700px;
   transform-origin: 1px 600px;
 }
 

@@ -39,18 +39,18 @@ const startGame = () => {
 };
 
 //! Function to display score screen
-const showScore = () => {
-  $("#start-screen").hide();
-  $("#game-screen").hide();
-  $("#score-screen").show();
-};
+// const showScore = () => {
+//   $("#start-screen").hide();
+//   $("#game-screen").hide();
+//   $("#score-screen").show();
+// };
 
 //! Function to restart game
-const restartGame = () => {
-  $("#start-screen").show();
-  $("#game-screen").hide();
-  $("#score-screen").hide();  
-};
+// const restartGame = () => {
+//   $("#start-screen").show();
+//   $("#game-screen").hide();
+//   $("#score-screen").hide();  
+// };
 
 //! Function to add divs into each row
 const addDivs = () => {
@@ -196,7 +196,6 @@ const checkRow = (row) => { // Argument taken is the row which the function is c
   };
   return landingPosition;
 };
-
 //! Function to shoot bubble
 const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
   // Using parseInt to get the row and col of the coord
@@ -387,6 +386,16 @@ $(() => {
   $("#game-screen").hide();
   $("#score-screen").hide();
   $(".msg").hide();
+  $("#htp").hide();
+
+  //! Adding event listener to open and close instructions
+  $("#htp-btn").on("click", () => {
+    $("#htp").show();
+  });
+
+  $("#x-btn").on("click", () => {
+    $("#htp").hide();
+  });
 
   //! Adding event listener to start game
   $("#start-btn").on("click", startGame);
