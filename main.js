@@ -6,8 +6,9 @@ let bubbleGrid = []; // Array to store coords of all bubbles in the grid
 let bubbleColors = [];
 const colors = ["red", "yellow", "blue", "green"]; // Array to hold bubble colors
 let rotateAngle = 0; // Variable to store angle of rotation for trajectory
-let possibleLandingCoords = []; // Array to hold possible landing points when a bubble is shot
-let optionalLandingCoords = [];
+// let possibleLandingCoords = []; // Array to hold possible landing points when a bubble is shot
+// let optionalLandingCoords = [];
+let landingPosition;
 let colorCluster = []; // Array for temp bubble storage to check for clusters
 let floaters = []; // Array for temp bubble storage to check for floaters
 let tempFloaters = []; // Array for temp bubble storage to check for floaters
@@ -33,8 +34,6 @@ const startGame = () => {
 
   // Resetting all the values
   rotateAngle = 0;
-  possibleLandingCoords = [];
-  optionalLandingCoords = [];
   colorCluster = [];
   counter = 0;
 };
@@ -135,154 +134,68 @@ const convertAngle = (angle) => {
 };
 
 //! Function to check for collisions
-const checkCollisions = () => {
+const checkRow = (row) => { // Argument taken is the row which the function is checking
 
-  // Initializing variables
-  let xDist, yDist, col;
+  console.log(`We are checking row ${row}`);
 
-  // Converting angle to radians
+  // Converting the angle to radians
   const angleInRadians = convertAngle(rotateAngle);
 
-  // Running a for loop on each row from the bottom
-  for (let row=8; row>=0; row--) {
+  // Creating a variable for the yDist - This is constant for both bounds
+  const yDist = (9-row) * 50;
 
-    // Assigning variables to values
-    yDist = (9-row) * 50;
-    xDist = yDist * Math.tan(angleInRadians);
-    col = Math.round(xDist / 25);
+  // Creating xDist and col variables for the intended bubble position
+  const xDist = yDist * Math.tan(angleInRadians);
+  let col = Math.round(xDist / 25) + 9;
 
-    if (row%2 == 0 && Math.abs(col) >= 0 && Math.abs(col) <= 9) { // Checking for even row and setting bounds
-      if (col%2 != 0) { // Checking for odd col
-        col += 9; // Getting the correct col
-        if (!bubbleGrid.includes(`${row}${col}`) && (bubbleGrid.includes(`${row-1}${col-1}`) || bubbleGrid.includes(`${row-1}${col+1}`))) {
-          console.log(`The bubble will land at ${row}${col}`);
+  // Creating xDist and col variables for the right boundary
+  const xDistR = xDist + 25;
+  let colR = Math.floor(xDistR / 25) + 10;
+
+  // Creating xDist and col variables for the left boundary
+  const xDistL = xDist - 25;
+  let colL = Math.floor(xDistL / 25) + 10;
+
+  console.log(`The bounds are at ${colR} and ${colL} and we are checking ${col}`);
+
+  // Checking for collision on the right
+  if (bubbleGrid.includes(`${row}${colR}`)) {
+      if (colR == Math.round(xDistR / 25)) { // Checking for small overlap
           colorCluster.push(`${row}${col}`);
-          return `${row}${col}`;
-        };
-      } else if (col%2 == 0 && col == Math.ceil(xDist / 25)) { // Checking for even col which was rounded up
-        col += 8;
-        if (!bubbleGrid.includes(`${row}${col}`) && (bubbleGrid.includes(`${row-1}${col-1}`) || bubbleGrid.includes(`${row-1}${col+1}`))) {
           console.log(`The bubble will land at ${row}${col}`);
-          colorCluster.push(`${row}${col}`);
-          return `${row}${col}`;
-        };
-      } else if (col%2 == 0 && col == Math.floor(xDist / 25)) { // Checking for odd col which was rounded down
-        col += 10;
-        if (!bubbleGrid.includes(`${row}${col}`) && (bubbleGrid.includes(`${row-1}${col-1}`) || bubbleGrid.includes(`${row-1}${col+1}`))) {
-          console.log(`The bubble will land at ${row}${col}`);
-          colorCluster.push(`${row}${col}`);
-          return `${row}${col}`;                    
-        };
-      }
-    } else if (row%2 != 0 && Math.abs(col) >= 0 && Math.abs(col) <= 8) { // Checking for odd row and setting bounds
-      if (col%2 == 0) { // Checking for even col
-        col += 9;
-        if (!bubbleGrid.includes(`${row}${col}`) && (bubbleGrid.includes(`${row-1}${col-1}`) || bubbleGrid.includes(`${row-1}${col+1}`))) {
-          console.log(`The bubble will land at ${row}${col}`);
-          colorCluster.push(`${row}${col}`);
-          return `${row}${col}`;            
-        };
-      } else if (col%2 != 0 && col == Math.ceil(xDist / 25)) { // Checking for odd col which was rounded up
-        col += 8;
-        if (!bubbleGrid.includes(`${row}${col}`) && (bubbleGrid.includes(`${row-1}${col-1}`) || bubbleGrid.includes(`${row-1}${col+1}`))) {
-          console.log(`The bubble will land at ${row}${col}`);
-          colorCluster.push(`${row}${col}`);
-          return `${row}${col}`;
-        };
-      } else if (col%2 != 0 && col == Math.floor(xDist / 25)) { // Checking for odd col which was rounded down
-        col += 10;
-        if (!bubbleGrid.includes(`${row}${col}`) && (bubbleGrid.includes(`${row-1}${col-1}`) || bubbleGrid.includes(`${row-1}${col+1}`))) {
-          console.log(`The bubble will land at ${row}${col}`);
-          colorCluster.push(`${row}${col}`);
-          return `${row}${col}`;
-        };
+          landingPosition = `${row}${col}`;
+      } else if (colR != Math.round(xDistR / 25)) { // Checking medium overlap
+          colorCluster.push(`${row+1}${colR-1}`);
+          console.log(`The bubble will land at ${row+1}${colR-1}`);
+          landingPosition = `${row+1}${colR-1}`;
       };
-    };
+  } else if (bubbleGrid.includes(`${row}${colR-1}`)) { // Checking large overlap
+      colorCluster.push(`${row+1}${colR-2}`);
+      console.log(`The bubble will land at ${row+1}${colR-2}`);
+      landingPosition = `${row+1}${colR-2}`;
+
+  // Checking for collision on the left
+  } else if (bubbleGrid.includes(`${row}${colL-1}`)) {
+      if (colL != Math.round(xDistL / 25)) {
+          colorCluster.push(`${row}${col}`);
+          console.log(`The bubble will land at ${row}${col}`);
+          landingPosition = `${row}${col}`;
+      } else if (colL == Math.round(xDistL / 25)) {
+          colorCluster.push(`${row+1}${colL}`);
+          console.log(`The bubble will land at ${row+1}${colL}`);
+          landingPosition = `${row+1}${colL}`;
+      };
+  } else if (bubbleGrid.includes(`${row}${colL}`)) {
+      colorCluster.push(`${row+1}${colL+1}`);
+      console.log(`The bubble will land at ${row+1}${colL+1}`);
+      landingPosition = `${row+1}${colL+1}`;
+
+  // Checking for no collisions
+  } else {
+    checkRow(row-1);
   };
+  return landingPosition;
 };
-
-//! Function to find possible positions a bubble could land in
-// const landingCoords = () => {
-
-//   // Defining variables
-//   let yDist, xDist, col;
-
-//   // Converting the angle from deg to rad
-//   const angleInRadians = convertAngle(rotateAngle);
-//   console.log(`The trajectory angle is ${rotateAngle}deg and ${angleInRadians}rad`);
-
-//   // Running through each row
-//   for (let row=8; row>=0; row--) {
-//     yDist = (9-row) * 50;
-//     xDist = yDist * Math.tan(angleInRadians);
-//     col = Math.round(xDist / 25);
-
-//     if (row%2 == 0) { // Checking for even row
-//       if (col%2 != 0 && Math.abs(col) >= 0 && Math.abs(col) <= 9) { // Checking for odd column
-//         col += 9;
-//         possibleLandingCoords.push(`${row}${col}`);
-//       } else if (col%2 == 0 && Math.abs(col) >= 0 && Math.abs(col) <= 9) { // Checking for even column
-//         if (col == Math.floor(xDist / 25)) { // Check if bubble was rounded up
-//           col += 10; // Push it to the higher even col
-//           optionalLandingCoords.push(`${row}${col}`);
-//         } else {
-//           col += 8; // Push it to the lower even col
-//           optionalLandingCoords.push(`${row}${col}`);
-//         };
-//       };
-//     } else if (row%2 !=0) { // Checking for odd row
-//       if (col%2 == 0 && Math.abs(col) >= 0 && Math.abs(col) <= 8) {
-//         col += 9;
-//         possibleLandingCoords.push(`${row}${col}`);
-//       } else if (col%2 != 0 && Math.abs(col) >= 0 && Math.abs(col) <= 8) {
-//         if (col == Math.floor(xDist / 25)) {
-//           col += 10;
-//           optionalLandingCoords.push(`${row}${col}`);
-//         } else {
-//           col += 8;
-//           optionalLandingCoords.push(`${row}${col}`);
-//         };
-//       };
-//     };
-//   };
-//   possibleLandingCoords = possibleLandingCoords.concat(optionalLandingCoords);
-//   console.log(`These are the possible landing coordinates: ${possibleLandingCoords}`);
-//   return possibleLandingCoords;
-// };
-
-//! Function to check if the possible positions are empty
-// const finalPosition = (arr) => {
-//   // Create a variable to store the final position where the bubble should land
-//   let finalLandingCoord;
-
-//   // Running a for loop through all the 
-//   for (const coord of arr) {
-//     const row = parseInt(coord[0]);
-//     const col = parseInt(coord.substr(1));
-
-//     // Other positions to check
-//     const toCheck = [`${row-1}${col+1}`, `${row-1}${col-1}`, `${row}${col-2}`, `${row}${col+2}`];
-
-//     if (!bubbleGrid.includes(coord)) { // Ensuring that the position is empty
-//       if (bubbleGrid.includes(toCheck[0]) || bubbleGrid.includes(toCheck[1])) {
-//         finalLandingCoord = coord;
-//         colorCluster.push(finalLandingCoord);
-//         console.log(`The bubble will land on ${finalLandingCoord}`);
-//         return finalLandingCoord;
-//       } else if (bubbleGrid.includes(toCheck[2]) && bubbleGrid.includes(toCheck[3])) {
-//         finalLandingCoord = coord;
-//         colorCluster.push(finalLandingCoord);
-//         console.log(`The bubble will land on ${finalLandingCoord}`);
-//         return finalLandingCoord;
-//       } else if (row == 0) {
-//         finalLandingCoord = coord;
-//         colorCluster.push(finalLandingCoord);
-//         console.log(`The bubble will land on ${finalLandingCoord}`);
-//         return finalLandingCoord;
-//       };
-//     };
-//   };
-// };
 
 //! Function to shoot bubble
 const shootBubble = (coord) => { // Argument taken is the finalLandingCoord
@@ -459,8 +372,8 @@ const checkGameState = () => {
     }, 1500);
   } else { // The game should go on
     reloadShooter();
-    possibleLandingCoords = [];
-    optionalLandingCoords = [];
+    // possibleLandingCoords = [];
+    // optionalLandingCoords = [];
     colorCluster = [];
   };
 };
@@ -513,18 +426,18 @@ $(() => {
       // const flc = finalPosition(plc); // Will return a str of the landing coord
 
       // Run a code to get the final landing position
-      const flc = checkCollisions();
+      checkRow(9);
 
       // Shoot the bubble into the position
-      shootBubble(flc);
+      shootBubble(landingPosition);
 
       //! Run these functions after a certain delay (1000ms)
       setTimeout(() => {
         // Add the shooter bubble into the grid
-        addShooterToGrid(flc);
+        addShooterToGrid(landingPosition);
       
         // Check if the bubble is in a color cluster
-        checkCluster(flc);
+        checkCluster(landingPosition);
         
         // Remove bubbles if cluster if 3 or more
         if (colorCluster.length >= 3) {
