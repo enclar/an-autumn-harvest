@@ -374,7 +374,7 @@ const checkCluster = (coord) => { // Argument is coords of a bubble to check
         colorCluster.push(`${row1}${col1}`);
         checkCluster(bubble);
       };
-    }
+    };
   };
   // console.log(colorCluster);
 };

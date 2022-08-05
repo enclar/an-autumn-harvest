@@ -1,4 +1,4 @@
-# An Autumn Harvest - A Puzzle-Bobble Inspired Game
+# An Autumn Harvest - Inspired by Puzzle Bobble
 
 ## About The Game
 ### History and Significance
@@ -87,9 +87,10 @@ This logic uses a recursive function to check if a bubble is connected directly 
 7. If the cluster is not connected, it is considered to be 'floating' and will pop and be removed
 8. After each round of checking, 'Possible Floater Array' is emptied and the next cluster will be checked
 
-
 ### Modifying the color array
-At the start of the code, 
+At the end of each round, a function checks if there are any colors which are no longer present in the bubble grid.
+
+If there are any, it removes that color from the pre-set color array and the shooter will not be generated in that color
 
 ## Future Improvements
 Based on the original Puzzle Bobble game, here are some additional functionalities I hope to implement in the future:
