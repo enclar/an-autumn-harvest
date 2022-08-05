@@ -6,6 +6,7 @@ let bubbleGrid = []; // Array to store coords of all bubbles in the grid
 const colors = ["red", "yellow", "blue", "green", "orange"]; // Array to hold bubble colors
 let rotateAngle = 0; // Variable to store angle of rotation for trajectory
 let landingPosition = '';
+let altLandingPosition = '';
 let colorCluster = []; // Array for temp bubble storage to check for clusters
 let floaters = []; // Array for temp bubble storage to check for floaters
 let tempFloaters = []; // Array for temp bubble storage to check for floaters
@@ -110,6 +111,23 @@ const convertAngle = (angle) => {
   return angle * (Math.PI / 180);
 };
 
+//! Function to check where a vertical bubble should land
+const checkStraight = () => {
+  for (let i=9; i>=0; i--) {
+    if (bubbleGrid.includes(`${i-1}${9}`)) {
+      landingPosition = `${i}${10}`;
+      colorCluster.push(landingPosition);
+      console.log(`The bubble will land at ${landingPosition}`)
+      return landingPosition;
+    } else if (bubbleGrid.includes(`${i-1}${8}`) || bubbleGrid.includes(`${i-1}${10}`)) {
+      landingPosition = `${i}${9}`;
+      colorCluster.push(landingPosition);
+      console.log(`The bubble will land at ${landingPosition}`)
+      return landingPosition;
+    };
+  };
+};
+
 //! Function to check for collisions
 const checkCollision = (row) => { // Argument taken is the row which the function is checking
 
@@ -134,8 +152,10 @@ const checkCollision = (row) => { // Argument taken is the row which the functio
 
   console.log(`The bounds are at ${colR} and ${colL} and we are checking ${col}`);
 
+  // Checking for a collision on the right
   rightCollision(row, col, colR, xDistR);
 
+  // If there is no right collision, check for left collision
   if (landingPosition != '') {
     colorCluster.push(landingPosition);
     console.log(`The bubble will land at ${landingPosition}`)
@@ -144,16 +164,36 @@ const checkCollision = (row) => { // Argument taken is the row which the functio
     leftCollision(row, col, colL, xDistL);
   };
 
+  // If there are no left or right collisions
   if (landingPosition != '') {
     colorCluster.push(landingPosition);
     console.log(`The bubble will land at ${landingPosition}`)
     return landingPosition;
-  } else {
+
+  // If not at row 0, check the row above
+  } else if (row != 0) {
     checkCollision(row-1);
+
+  // If already checked until row 0
+  } else if (row == 0) {
+    if (col%2 != 0) {
+      landingPosition = `${row}${col-1}`;
+      colorCluster.push(landingPosition);
+      console.log(`The bubble will land at ${landingPosition}`)
+      return landingPosition;
+    } else if (col%2 != 0 && col == Math.floor(xDist / 25)) {
+      landingPosition = `${row}${col}`;
+      colorCluster.push(landingPosition);
+      console.log(`The bubble will land at ${landingPosition}`)
+      return landingPosition;
+    } else if (col%2 != 0 && col == Math.ceil(xDist / 25)) {
+      landingPosition = `${row}${col-2}`;
+      colorCluster.push(landingPosition);
+      console.log(`The bubble will land at ${landingPosition}`)
+      return landingPosition;
+    };
   };
 };
-
-//! Function to bounce bubble if it hits a wall
 
 
 //! Function to check collisions on the right
@@ -227,6 +267,32 @@ const leftCollision = (row, col, colL, xDistL) => {
   } else if (bubbleGrid.includes(`${row}${colL-1}`)) {
     landingPosition = `${row+1}${colL}`;
   };
+};
+
+//! Check if the landing position is out of the grid
+const outOfScreen = (coord) => {
+
+  console.log(`We are checking if ${coord} is out of screen`);
+
+  // Initializing the variables
+  const row = parseInt(coord[0]);
+  const col = parseInt(coord.substr(1));
+
+  // Checking if the bubble will be out of screen
+  if (row%2 == 0) {
+    if (col<0) {
+      altLandingPosition = `${row-1}${col-2}`;
+    } else if (col > 18) {
+      altLandingPosition = `${row-1}${col+2}`;
+    };
+  } else if (row%2 != 0) {
+    if (col<1) {
+      altLandingPosition = `${row-1}${col-3}`;
+    } else if (col > 17) {
+      altLandingPosition = `${row-1}${col+3}`;
+    };
+  };
+  return altLandingPosition;
 };
 
 //! Function to shoot bubble
@@ -436,6 +502,7 @@ const checkGameState = () => {
     reloadShooter();
     colorCluster = [];
     landingPosition = '';
+    altLandingPosition = '';
   };
 };
 
@@ -479,44 +546,63 @@ $(() => {
   //! Event listener to shoot
   $(window).on("keydown", (event) => {
     if (event.which === 32) { // Listening for pressdown of spacebar
-      // Check the possible landing coords
-      // const plc = landingCoords(); // Will return an array of possible landing coords
-      
-      // Check which is the highest available landing coord
-      // const flc = finalPosition(plc); // Will return a str of the landing coord
 
-      // Run a code to get the final landing position
-      checkCollision(9);
+      if (rotateAngle == 0) {
+        checkStraight();
+      } else {
+        checkCollision(9);
+      };
 
-      // Shoot the bubble into the position
-      shootBubble(landingPosition);
+      // Check if bubble will go out of screen
+      outOfScreen(landingPosition);
 
-      //! Run these functions after a certain delay (1000ms)
-      setTimeout(() => {
-        // Add the shooter bubble into the grid
-        addShooterToGrid(landingPosition);
-      
-        // Check if the bubble is in a color cluster
-        checkCluster(landingPosition);
-        
-        // Remove bubbles if cluster if 3 or more
-        if (colorCluster.length >= 3) {
-          removeCluster(colorCluster);
+      // If bubble will go out of screen
+      if (altLandingPosition != '') {
+        console.log(`Out of screen bubble! The alternate landing position is at ${altLandingPosition}`);
+        shootBubble(altLandingPosition);
           
-          console.log(`These are the bubbles in the grid: ${bubbleGrid}`);
-          console.log(`We will now check for floaters`);
+        // Display the warning
+        setTimeout(() => {
+          $("#anyhow").show();
+        }, 300);
+          
+        setTimeout(() => {
+          $("#anyhow").hide();
+          checkGameState();
+        }, 1000);
 
-          // If bubbles were removed
-          checkForFloaters(bubbleGrid);
-          console.log(`These are the floaters to be removed ${floaters}`);
+        // If bubble lands within grid
+        } else {
+          // Shoot the bubble into the position
+          shootBubble(landingPosition);
+
+          //! Run these functions after a certain delay (1000ms)
           setTimeout(() => {
-            removeCluster(floaters);
-          }, 250);
+            // Add the shooter bubble into the grid
+            addShooterToGrid(landingPosition);
+            
+            // Check if the bubble is in a color cluster
+            checkCluster(landingPosition);
+              
+            // Remove bubbles if cluster if 3 or more
+            if (colorCluster.length >= 3) {
+              removeCluster(colorCluster);
+                
+              console.log(`These are the bubbles in the grid: ${bubbleGrid}`);
+              console.log(`We will now check for floaters`);
+
+              // If bubbles were removed
+              checkForFloaters(bubbleGrid);
+              console.log(`These are the floaters to be removed ${floaters}`);
+              setTimeout(() => {
+                removeCluster(floaters);
+              }, 250);
+            };
+              
+            // Check the game state
+            checkGameState();
+          }, 1000);
         };
-        
-        // Check the game state
-        checkGameState();
-      }, 1000);
     };
   });
 

@@ -36,9 +36,9 @@ When the game finishes, players will exit to the main screen to restart the game
 
 ![Puzzle Bobble]()
 
-The playing arena consists of 10 rows, each consisting of 20 columns, even though the game will only have a maximum of 10 bubbles per row.
+The playing arena consists of 10 rows, each consisting of 20 columns (divs), even though the game will only have a maximum of 10 bubbles per row. This is to enable the bubbles to be generated in a honeycomb structure for easy access.
 
-A function then runs to generate randomly colored bubbles in a honeycomb structure and a shooter bubble at the base of the game arena.
+A function then runs to generate randomly colored bubbles and a shooter bubble at the base of the game arena. The random color is assigned as a class and will be used to give appearance properties to each bubble.
 
 ### Setting the shooting trajectory
 Users control the shooting trajectory by changing the angle of shooting using the L/R arrow keys.
@@ -49,11 +49,16 @@ When the player presses the spacebar to shoot the bubble, the current trajectory
 
 ### Logic to determine where the bubble should land
 
+### Shooting the bubbles
+The motion of shooting the bubble is achieved by using an animation that will move the bubble to the determined landing position
+
 
 ### Logic for bubbles to pop
 There are two possible scenarios for a bubble to pop:
 1. It is within a color cluster of 3 or more of the same color
 2. It is left 'floating' (no attachment to the top of the grid) after a cluster has popped
+
+Once it has been determined which bubbles should pop and be removed, a function is run to remove the class attribute from those bubbles (divs) in order to remove its appearance from the grid
 
 #### Color Cluster of 3 or more
 This logic uses a recursive function to check the bubbles around the one that was just shot in order to identify if a color cluster has been formed
@@ -82,9 +87,14 @@ This logic uses a recursive function to check if a bubble is connected directly 
 7. If the cluster is not connected, it is considered to be 'floating' and will pop and be removed
 8. After each round of checking, 'Possible Floater Array' is emptied and the next cluster will be checked
 
+
+### Modifying the color array
+At the start of the code, 
+
 ## Future Improvements
 Based on the original Puzzle Bobble game, here are some additional functionalities I hope to implement in the future:
 
 1. Set up a timer to limit the gameplay duration
 2. Set up a function to 'drop' the bubbles down by one row each time a certain number of bubbles are shot
 3. Set up a highscore board or implement varying levels of difficulty
+4. Bounce the bubble off the walls

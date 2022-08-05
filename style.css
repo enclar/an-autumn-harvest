@@ -231,3 +231,26 @@ body {
   top: 197px;
   z-index: 11;
 }
+
+#anyhow {
+  width: 500px;
+  height: 600px;
+  background: rgb(0, 0, 0, .2);
+}
+
+#anyhow-img {
+  width: 200px;
+  position: absolute;
+  top: 200px;
+  right: 150px;
+}
+
+#anyhow-msg {
+  position: absolute;
+  font-size: 18px;
+  text-align: left;
+  line-height: 25px;
+  left: 215px;
+  top: 230px;
+  z-index: 11;
+}
