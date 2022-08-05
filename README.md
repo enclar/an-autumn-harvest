@@ -33,6 +33,9 @@ On the start screen, players click the start button to be brought to the game sc
 When the game finishes, players will exit to the main screen to restart the game if they wish.
 
 ### Setting up the playing arena (HTML & JS)
+
+![Puzzle Bobble]()
+
 The playing arena consists of 10 rows, each consisting of 20 columns, even though the game will only have a maximum of 10 bubbles per row.
 
 A function then runs to generate randomly colored bubbles in a honeycomb structure and a shooter bubble at the base of the game arena.
@@ -68,7 +71,7 @@ Let the center bubble in the left diagram be the one that was just shot into the
 #### Floating Bubbles
 This logic uses a recursive function to check if a bubble is connected directly to the screen (either directly or indirectly)
 
-![Floating Bubble Logic]()
+![Floating Bubble Logic](./images/floaters.png)
 
 1. Duplicate the array (Bubble Array) containing the coordinates of bubbles which are currently in the grid
 2. Add the first bubble in 'Bubble Array' into a new array (Possible Floater Array) and check if the 6 spaces around it contain bubbles

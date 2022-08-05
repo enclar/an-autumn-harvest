@@ -153,6 +153,9 @@ const checkCollision = (row) => { // Argument taken is the row which the functio
   };
 };
 
+//! Function to bounce bubble if it hits a wall
+
+
 //! Function to check collisions on the right
 const rightCollision = (row, col, colR, xDistR) => {
   
