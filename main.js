@@ -3,11 +3,8 @@
 //* DEFINING VARIABLES
 const $rows = $(".row"); // Variable to store all divs with row class
 let bubbleGrid = []; // Array to store coords of all bubbles in the grid
-let bubbleColors = [];
-const colors = ["red", "yellow", "blue", "green"]; // Array to hold bubble colors
+const colors = ["red", "yellow", "blue", "green", "orange"]; // Array to hold bubble colors
 let rotateAngle = 0; // Variable to store angle of rotation for trajectory
-// let possibleLandingCoords = []; // Array to hold possible landing points when a bubble is shot
-// let optionalLandingCoords = [];
 let landingPosition = '';
 let colorCluster = []; // Array for temp bubble storage to check for clusters
 let floaters = []; // Array for temp bubble storage to check for floaters
@@ -31,26 +28,7 @@ const startGame = () => {
   
   //! Generating shooter bubble
   addShooter();
-
-  // Resetting all the values
-  rotateAngle = 0;
-  colorCluster = [];
-  counter = 0;
 };
-
-//! Function to display score screen
-// const showScore = () => {
-//   $("#start-screen").hide();
-//   $("#game-screen").hide();
-//   $("#score-screen").show();
-// };
-
-//! Function to restart game
-// const restartGame = () => {
-//   $("#start-screen").show();
-//   $("#game-screen").hide();
-//   $("#score-screen").hide();  
-// };
 
 //! Function to add divs into each row
 const addDivs = () => {
@@ -81,7 +59,7 @@ const addBubbleInGrid = (row, col) => { // Argument taken is row and col data
 
   // Adding bubble coordinates into array
   bubbleGrid.push(`${row}${col}`);
-  bubbleColors.push($bubble.attr("class"));
+  // bubbleColors.push($bubble.attr("class"));
   console.log(`Appended a bubble at ${[row, col]}`);
 };
 
@@ -103,7 +81,6 @@ const addBubbleGrid = (rows, cols) => { // Argument taken is total num of rows a
   };
   // Logging the coordinates of all the bubbles in the grid
   console.log(`These are the coordinates of bubbles in the grid: ${bubbleGrid}`);
-  console.log(`These are the bubble colors present: ${bubbleColors}`);
 };
 
 //! Function to generate shooter bubble
@@ -398,11 +375,38 @@ const recursiveCheck = (arr, coord) => {
   return tempFloaters;
 };
 
+//! Function to check and edit the colors of all the bubbles in the grid
+const colorCheck = (arr) => {
+
+  const bubbleColors = [];
+
+  for (let i=0; i<arr.length; i++) {
+    const coord = arr[i]
+    const row = parseInt(coord[0]);
+    const col = parseInt(coord.substr(1));
+    const $color = $rows.eq(row).children().eq(col).attr("class");
+
+    bubbleColors.push($color);
+  };
+
+  for (let i=0; i<colors.length; i++) {
+    if (!bubbleColors.includes(colors[i])) {
+      colors.splice(i, 1);
+    };
+  };
+
+  console.log(`These are the colors left in the array: ${colors}`);
+};
+
+
 //! Function to 'reload' the shooter
 const reloadShooter = () => {
   // Removing the existing shooter and appending a new div to the shooter row
   $("#shooter-bubble").remove();
   $rows.eq(9).append("<div>");
+
+  // Checking the color array
+  colorCheck(bubbleGrid);
 
   // Assigning the div to be a shooter bubble
   addShooter();
@@ -415,19 +419,18 @@ const checkGameState = () => {
   // Check if there are any bubbles left on the screen
   if (bubbleGrid.length == 0) {
     reloadShooter()
+    $("#trajectory").hide();
     console.log("The game has ended!");
     $("#win").show();
+  // Check if the bubbles have touched the bottom of the screen
   } else if (colorCluster.length<=2 && colorCluster[0][0] == 8){
     reloadShooter();
     console.log("The game has ended...");
     $("#lose").show();
-    // setTimeout(() => {
-    //   showScore()
-    // }, 1500);
-  } else { // The game should go on
+  // Check if the game should continue
+  } else {
+    // Resetting
     reloadShooter();
-    // possibleLandingCoords = [];
-    // optionalLandingCoords = [];
     colorCluster = [];
     landingPosition = '';
   };
@@ -437,10 +440,8 @@ const checkGameState = () => {
 //* LOAD AFTER DOM HAS LOADED
 $(() => {
 
-  //! Hide the game screen and score screen
-  // $("#start-screen").hide();
+  //! Hide the game screen, instructions and results message
   $("#game-screen").hide();
-  $("#score-screen").hide();
   $(".msg").hide();
   $("#htp").hide();
 
@@ -455,15 +456,6 @@ $(() => {
 
   //! Adding event listener to start game
   $("#start-btn").on("click", startGame);
-
-  //! Adding div grid
-  // addDivs(19);
-
-  //! Generating a grid with 9/10 bubbles per row
-  // addBubbleGrid(5, 20);
-
-  //! Generating shooter bubble
-  // addShooter();
 
   //! Event listener to change angle of shooting
   $(window).on("keydown", (event) => {
