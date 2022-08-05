@@ -27,11 +27,8 @@ body {
   background: rgb(234, 248, 253);
 }
 
-#start-screen, #game-screen, #score-screen {
+#start-screen, #game-screen{
   position: relative;
-  background-color: lavender;
-  width: 500px;
-  height: 575px;
   overflow: hidden;
   margin: 0 auto;
 }
@@ -42,38 +39,65 @@ body {
   height: 600px;
 }
 
+#game-screen {
+  background: url(./images/game-screen.png);
+  width: 500px;
+  height: 600px;
+}
+
 /* #game-screen {
   height: 500px;
 } */
 
 .msg {
+  width: 500px;
+  height: 600px;
   position: absolute;
-  width: 250px;
-  height: 100px;
-  left: 122.5px;
-  top: 200px;
-  border: 5px solid navy;
-  background-color: papayawhip;
-  border-radius: 25px;
-  font-family: Zorque;
-  color: navy;
+  font-family: Warioland;
+  color: rgb(59, 59, 59);
   font-size: 35px;
   text-align: center;
   line-height: 100px;
   z-index: 10;
+  background: rgb(0, 0, 0, .5);
+}
+
+#lose-img {
+  position: absolute;
+  right: 100px;
+  top: 162.5px;
+}
+
+.end-x {
+  position: absolute;
+  top: 172.5px;
+  right: 110px;
+  background-color: white;
+  border: none;
+  font-family: warioland;
+  z-index: 11;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.result-msg {
+  position: absolute;
+  font-size: 18px;
+  line-height: 18px;
+  text-align: left;
+  left: 183px;
+  top: 195px;
+  z-index: 11;
 }
 
 #score {
   position: absolute;
-  top: 500px;
-  background-color: whitesmoke;
-  width: 500px;
-  height: 100px;
-  font-family: Warioland;
-  color: navy;
-  font-size: 30px;
-  text-align: center;
-  line-height: 78px;
+  top: 540px;
+  right: 35px;
+  font-family: BB;
+  color: white;
+  font-size: 18px;
+  text-align: right;
 }
 
 #welcome-msg {
@@ -106,7 +130,7 @@ body {
   font-size: 15px;
   font-family: BB;
   color: rgb(59, 59, 59);
-  background: whitesmoke;
+  background: white;
   border: none;
   border-radius: 15px;
   margin: 85px 150px 0 150px;
@@ -121,18 +145,18 @@ body {
 }
 
 #htp {
-  width: 350px;
-  height: 400px;
+  width: 375px;
+  height: 375px;
   background-color: white;
   position: absolute;
   top: 100px;
-  left: 75px;
+  left: 62.5px;
   border-radius: 20px;
 }
 
 #x-btn {
   position: absolute;
-  left: 315px;
+  left: 335px;
   top: 10px;
   background: white;
   border: none;
@@ -142,7 +166,8 @@ body {
 }
 
 #htp-img {
-  width: 350px;
+  width: 375px;
+  height: 375px;
   position: absolute;
   top: 30px;
 }

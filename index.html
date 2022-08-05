@@ -27,8 +27,47 @@
 
     <div id="game-screen">
 
-      <div class="msg" id="lose">YOU LOSE</div>
-      <div class="msg" id="win">YOU WIN</div>
+      <div class="msg" id="lose">
+        <button class="end-x">X</button>
+        <p class="result-msg">
+          UH OH!<br>
+           <br>
+          YOU WEREN'T SKILLFUL<br>
+          ENOUGH AND TOO MANY<br>
+          FRUIT FELL TO THE GROUND<br>
+           <br>
+          KEEP PRACTICING!
+        </p>
+        <img id="lose-img" src="./images/lose.png" />
+      </div>
+
+      <div class="msg" id="win">
+        <button class="end-x">X</button>
+        <p class="result-msg">
+          YOU DID AN AMAZING JOB!<br>
+           <br>
+          WE'LL BE SURE TO<br>
+          HIRE YOU AGAIN FOR THE<br>
+          NEXT HARVEST SEASON<br>
+           <br>
+          HAPPY HARVESTING!
+        </p>
+        <img id="lose-img" src="./images/win.png" />
+      </div>
+
+      <!-- <div class="msg" id="lose">
+        <button id="end-x">X</button>
+        <p id="lose-msg">
+          UH OH!<br>
+           <br>
+          YOU WEREN'T SKILLFUL<br>
+          ENOUGH AND TOO MANY<br>
+          FRUIT FELL TO THE GROUND<br>
+           <br>
+          KEEP PRACTICING!
+        </p>
+        <img id="lose-img" src="./images/lose.png" />
+      </div> -->
       
       <div id="grid">
         <div class="row even"></div>
@@ -42,7 +81,8 @@
         <div class="row even"></div>
         <div class="row odd"></div>        
       </div>
-      <div id="score">SCORE: 0</div>
+
+      <p id="score">SCORE: 0</p>
     </div>
 
   <!-- <div id="score-screen">

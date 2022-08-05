@@ -421,9 +421,9 @@ const checkGameState = () => {
     reloadShooter();
     console.log("The game has ended...");
     $("#lose").show();
-    setTimeout(() => {
-      showScore()
-    }, 1500);
+    // setTimeout(() => {
+    //   showScore()
+    // }, 1500);
   } else { // The game should go on
     reloadShooter();
     // possibleLandingCoords = [];
@@ -525,6 +525,9 @@ $(() => {
     };
   });
 
-  // $("#return").on("click", restartGame);
+  //! Close result message and reload page upon ending of game
+  $(".end-x").on("click", () => {
+    location.reload();
+  });
 
 });
