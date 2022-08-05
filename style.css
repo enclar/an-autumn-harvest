@@ -22,33 +22,163 @@
   font-family: Little Miss;
   src: url(./fonts/LittleMissLoudonBold-VGO9l.ttf);
 }
-
+/*-----  OVERALL  -----*/
 body {
   background: rgb(234, 248, 253);
 }
 
+/*-----  START SCREEN  -----*/
 #start-screen, #game-screen{
   position: relative;
   overflow: hidden;
   margin: 0 auto;
+  width: 500px;
+  height: 600px;
 }
 
 #start-screen {
   background: url(./images/start-screen.png);
-  width: 500px;
-  height: 600px;
 }
 
+#welcome-msg {
+  font-family: BB;
+  font-size: 23px;
+  color:rgb(59, 59, 59);
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 28px;
+}
+
+#intro {
+  font-family: Warioland;
+  text-align: center;
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 0px;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+#start-btn, #htp-btn {
+  width: 200px;
+  height: 75px;
+  font-size: 15px;
+  font-family: BB;
+  color: rgb(59, 59, 59);
+  background: white;
+  border: none;
+  border-radius: 15px;
+  margin: 85px 150px 0 150px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  line-height: 20px;
+}
+
+#htp-btn {
+  margin: 15px 150px 0 150px;
+  font-size: 12px;
+}
+
+#htp {
+  width: 375px;
+  height: 375px;
+  background-color: white;
+  position: absolute;
+  top: 100px;
+  left: 62.5px;
+  border-radius: 20px;
+}
+
+#htp-img {
+  width: 375px;
+  height: 375px;
+  position: absolute;
+  top: 30px;
+}
+
+#x-btn {
+  position: absolute;
+  left: 335px;
+  top: 10px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-family: Warioland;
+  font-size: 28px;
+}
+
+/*-----  GAME SCREEN -----*/
 #game-screen {
   background: url(./images/game-screen.png);
-  width: 500px;
-  height: 600px;
 }
 
-/* #game-screen {
-  height: 500px;
-} */
+#grid {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
 
+.row {
+  width: 500px;
+  height: 50px;
+}
+
+.red, .yellow, .green, .blue {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+}
+
+.red {
+  background: url(./images/strawberry.png);
+}
+
+.yellow {
+  background: url(./images/lemon.png);
+}
+
+.green {
+  background: url(./images/pear.png);
+}
+
+.blue {
+  background: url(./images/blueberry.png);
+}
+
+#score {
+  position: absolute;
+  top: 540px;
+  right: 35px;
+  font-family: BB;
+  color: white;
+  font-size: 18px;
+  text-align: right;
+}
+
+/*-----  SHOOTER -----*/
+#shooter {
+  position: relative;
+  bottom: 50px;
+}
+
+#shooter-bubble {
+  position: relative;
+  left: 225px;
+  bottom: 0px;
+}
+
+#trajectory {
+  box-shadow: inset 0 0 3px rgb(59, 59, 59);
+  width: 2px;
+  height: 600px;
+  position: relative;
+  left: 249px;
+  bottom: 725px;
+  transform-origin: 1px 600px;
+}
+
+/*-----  WIN/LOSE MESSAGE -----*/
 .msg {
   width: 500px;
   height: 600px;
@@ -90,163 +220,7 @@ body {
   z-index: 11;
 }
 
-#score {
-  position: absolute;
-  top: 540px;
-  right: 35px;
-  font-family: BB;
-  color: white;
-  font-size: 18px;
-  text-align: right;
-}
 
-#welcome-msg {
-  font-family: BB;
-  font-size: 23px;
-  color:rgb(59, 59, 59);
-  text-align: center;
-  margin-top: 50px;
-  margin-bottom: 28px;
-}
-
-#intro {
-  font-family: Warioland;
-  text-align: center;
-  width: 400px;
-  margin: 0 auto;
-  margin-top: 0px;
-  font-size: 18px;
-  letter-spacing: 1px;
-}
-
-/* h2 {
-  margin-top: 24px;
-  font-family: Zorque;
-} */
-
-#start-btn, #htp-btn {
-  width: 200px;
-  height: 75px;
-  font-size: 15px;
-  font-family: BB;
-  color: rgb(59, 59, 59);
-  background: white;
-  border: none;
-  border-radius: 15px;
-  margin: 85px 150px 0 150px;
-  cursor: pointer;
-  letter-spacing: 1px;
-  line-height: 20px;
-}
-
-#htp-btn {
-  margin: 15px 150px 0 150px;
-  font-size: 12px;
-}
-
-#htp {
-  width: 375px;
-  height: 375px;
-  background-color: white;
-  position: absolute;
-  top: 100px;
-  left: 62.5px;
-  border-radius: 20px;
-}
-
-#x-btn {
-  position: absolute;
-  left: 335px;
-  top: 10px;
-  background: white;
-  border: none;
-  cursor: pointer;
-  font-family: Warioland;
-  font-size: 28px;
-}
-
-#htp-img {
-  width: 375px;
-  height: 375px;
-  position: absolute;
-  top: 30px;
-}
-
-/* #start-btn, #htp-btn {
-  position: absolute;
-  width: 200px;
-  height: 75px;
-  background-color: whitesmoke;
-  top: 250px;
-  text-align: center;
-  color: navy;
-  border-radius: 15px;
-  cursor: pointer;
-}
-
-#htp-btn {
-  top: 350px;
-} */
-
-#grid {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.row {
-  width: 500px;
-  height: 50px;
-}
-
-/* .sq-div {
-  width: 25px;
-  height: 50px;
-} */
-
-.red, .yellow, .green, .blue {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-}
-
-.red {
-  background: url(./images/strawberry.png);
-}
-
-.yellow {
-  background: url(./images/lemon.png);
-}
-
-.green {
-  background: url(./images/pear.png);
-}
-
-.blue {
-  background: url(./images/blueberry.png);
-}
-
-#shooter {
-  position: relative;
-  bottom: 50px;
-}
-
-#shooter-bubble {
-  position: relative;
-  left: 225px;
-  bottom: 0px;
-}
-
-#trajectory {
-  box-shadow: inset 0 0 3px rgb(59, 59, 59);
-  width: 2px;
-  height: 600px;
-  position: relative;
-  left: 249px;
-  bottom: 725px;
-  transform-origin: 1px 600px;
-}
 
 /* #return {
   font-family: Zorque;
