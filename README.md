@@ -25,7 +25,7 @@ In an arcade setting, players use a joystick and button to control the shooting 
 - Implement event listeners which will allow the player to interact with the game using the keyboard
 
 ## Technical Structure and Programmatic Code
-### Game States
+### Game Screen
 The game has two main screens - A start screen and a game screen. The contents for each screen is stored in a separate div and will be shown/hidden through the use of event listeners.
 
 On the start screen, players click the start button to be brought to the game screen.
@@ -47,11 +47,26 @@ An event listener is setup to rotate the trajectory by a certain angle each time
 
 When the player presses the spacebar to shoot the bubble, the current trajectory angle can be accessed from the variable and used to determine the position where the bubble should land.
 
+### Game State
+The coordinates of the bubbles which are currently in the arena are stored in an array.
+
+After a bubble has been shot and checked for color clusters/floaters, a function will check for three possible scenarios:
+1. The player has won - The array of bubble coordinates will be empty
+2. The player has lost - The bubbles have reached the lowest row
+3. The game will continue - There are still bubble coordinates in the array and the bubbles have not reached the lowest row
+
+If the player has won/lost, a result message will pop up. By closing the message, the page will reload and the player can choose to play another round.
+
 ### Logic to determine where the bubble should land
+A function is used to check if the bubble will encounter any collisions in its trajectory path.
+
+There are a few possible scenarios:
+1. Right/left collision - A function will run to check the degree of collision and determine the landing position. If there is no collision detected in that row, it will call itself recursively to check the row above
+2. Out of screen - If the bubble is shot inaccurately and goes out of screen, a warning message will pop up
+3. Top of screen - If the bubble is shot into a space on the top row without encountering any collisions on the left/right, it will stop in that position
 
 ### Shooting the bubbles
 The motion of shooting the bubble is achieved by using an animation that will move the bubble to the determined landing position
-
 
 ### Logic for bubbles to pop
 There are two possible scenarios for a bubble to pop:
@@ -94,8 +109,7 @@ If there are any, it removes that color from the pre-set color array and the sho
 
 ## Future Improvements
 Based on the original Puzzle Bobble game, here are some additional functionalities I hope to implement in the future:
-
-1. Set up a timer to limit the gameplay duration
-2. Set up a function to 'drop' the bubbles down by one row each time a certain number of bubbles are shot
-3. Set up a highscore board or implement varying levels of difficulty
-4. Bounce the bubble off the walls
+1. Bounce the bubble off the walls
+2. Set up a timer to limit the gameplay duration
+3. Set up a function to 'drop' the bubbles down by one row each time a certain number of bubbles are shot
+4. Set up a highscore board or implement varying levels of difficulty
