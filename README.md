@@ -34,7 +34,7 @@ When the game finishes, players will exit to the main screen to restart the game
 
 ### Setting up the playing arena (HTML & JS)
 
-![Puzzle Bobble]()
+![Puzzle Bobble](./images/screen-su.png)
 
 The playing arena consists of 10 rows, each consisting of 20 columns (divs), even though the game will only have a maximum of 10 bubbles per row. This is to enable the bubbles to be generated in a honeycomb structure for easy access.
 
@@ -64,6 +64,8 @@ There are a few possible scenarios:
 1. Right/left collision - A function will run to check the degree of collision and determine the landing position. If there is no collision detected in that row, it will call itself recursively to check the row above
 2. Out of screen - If the bubble is shot inaccurately and goes out of screen, a warning message will pop up
 3. Top of screen - If the bubble is shot into a space on the top row without encountering any collisions on the left/right, it will stop in that position
+
+Once the landing coordinates have been determined, they are used as arguments for the bubble shooting function.
 
 ### Shooting the bubbles
 The motion of shooting the bubble is achieved by using an animation that will move the bubble to the determined landing position
