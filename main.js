@@ -152,47 +152,58 @@ const checkCollision = (row) => { // Argument taken is the row which the functio
 
   console.log(`The bounds are at ${colR} and ${colL} and we are checking ${col}`);
 
-  // Checking for a collision on the right
-  rightCollision(row, col, colR, xDistR);
+  // Check if the bubble is going out of screen
+  totalOOS(row, col);
 
-  // If there is no right collision, check for left collision
-  if (landingPosition != '') {
-    colorCluster.push(landingPosition);
-    console.log(`The bubble will land at ${landingPosition}`)
-    return landingPosition;
+  if (altLandingPosition != '') {
+    colorCluster.push(altLandingPosition);
+    console.log(`The bubble will land at ${altLandingPosition}`)
+    return altLandingPosition;
+
+  // If bubble is not going out of screen
   } else {
-    leftCollision(row, col, colL, xDistL);
-  };
+  // Checking for a collision on the right
+    rightCollision(row, col, colR, xDistR);
 
-  // If there are no left or right collisions
-  if (landingPosition != '') {
-    colorCluster.push(landingPosition);
-    console.log(`The bubble will land at ${landingPosition}`)
-    return landingPosition;
-
-  // If not at row 0, check the row above
-  } else if (row != 0) {
-    checkCollision(row-1);
-
-  // If already checked until row 0
-  } else if (row == 0) {
-    if (col%2 != 0) {
-      landingPosition = `${row}${col-1}`;
+    // If there is no right collision, check for left collision
+    if (landingPosition != '') {
       colorCluster.push(landingPosition);
       console.log(`The bubble will land at ${landingPosition}`)
       return landingPosition;
-    } else if (col%2 != 0 && col == Math.floor(xDist / 25)) {
-      landingPosition = `${row}${col}`;
-      colorCluster.push(landingPosition);
-      console.log(`The bubble will land at ${landingPosition}`)
-      return landingPosition;
-    } else if (col%2 != 0 && col == Math.ceil(xDist / 25)) {
-      landingPosition = `${row}${col-2}`;
-      colorCluster.push(landingPosition);
-      console.log(`The bubble will land at ${landingPosition}`)
-      return landingPosition;
+    } else {
+      leftCollision(row, col, colL, xDistL);
     };
-  };
+
+    // If there are no left or right collisions
+    if (landingPosition != '') {
+      colorCluster.push(landingPosition);
+      console.log(`The bubble will land at ${landingPosition}`)
+      return landingPosition;
+
+    // If not at row 0, check the row above
+    } else if (row != 0) {
+      checkCollision(row-1);
+
+    // If already checked until row 0
+    } else if (row == 0) {
+      if (col%2 != 0) {
+        landingPosition = `${row}${col-1}`;
+        colorCluster.push(landingPosition);
+        console.log(`The bubble will land at ${landingPosition}`)
+        return landingPosition;
+      } else if (col%2 != 0 && col == Math.floor(xDist / 25)) {
+        landingPosition = `${row}${col}`;
+        colorCluster.push(landingPosition);
+        console.log(`The bubble will land at ${landingPosition}`)
+        return landingPosition;
+      } else if (col%2 != 0 && col == Math.ceil(xDist / 25)) {
+        landingPosition = `${row}${col-2}`;
+        colorCluster.push(landingPosition);
+        console.log(`The bubble will land at ${landingPosition}`)
+        return landingPosition;
+      };
+    };
+  };  
 };
 
 
@@ -270,7 +281,7 @@ const leftCollision = (row, col, colL, xDistL) => {
 };
 
 //! Check if the landing position is out of the grid
-const outOfScreen = (coord) => {
+const partialOOS = (coord) => {
 
   console.log(`We are checking if ${coord} is out of screen`);
 
@@ -292,6 +303,28 @@ const outOfScreen = (coord) => {
       altLandingPosition = `${row-1}${col+3}`;
     };
   };
+  return altLandingPosition;
+};
+
+//! Check if the landing position is out of the grid
+const totalOOS = (row, col) => {
+
+  console.log(`We are checking if ${row}${col} is out of screen`);
+
+  // Checking if the bubble will be out of screen
+  if (row%2 == 0) {
+    if (col<0) {
+      altLandingPosition = `${row-1}${col-2}`;
+    } else if (col > 18) {
+      altLandingPosition = `${row-1}${col+2}`;
+    };
+  } else if (row%2 != 0) {
+    if (col<1) {
+      altLandingPosition = `${row-1}${col-3}`;
+    } else if (col > 17) {
+      altLandingPosition = `${row-1}${col+3}`;
+    };
+  }
   return altLandingPosition;
 };
 
@@ -530,13 +563,13 @@ $(() => {
   //! Event listener to change angle of shooting
   $(window).on("keydown", (event) => {
     if (event.which === 39) { // Listening for pressdown of right arrow key
-      if (rotateAngle <= 45) { // Preventing arrow from rotating out of the playing field
+      if (rotateAngle <= 90) { // Preventing arrow from rotating out of the playing field
         rotateAngle += 1; // Angle of rotation changes by 1deg with each press
         rotateTrajectory(rotateAngle);
       };
     };
     if (event.which === 37) {
-      if (rotateAngle >= -45) {
+      if (rotateAngle >= -90) {
         rotateAngle -= 1;
         rotateTrajectory(rotateAngle);
       };
@@ -547,14 +580,15 @@ $(() => {
   $(window).on("keydown", (event) => {
     if (event.which === 32) { // Listening for pressdown of spacebar
 
+      // Check if bubble should be shot straight
       if (rotateAngle == 0) {
         checkStraight();
       } else {
         checkCollision(9);
       };
 
-      // Check if bubble will go out of screen
-      outOfScreen(landingPosition);
+      // Check if bubble will go partially out of screen
+      partialOOS(landingPosition);
 
       // If bubble will go out of screen
       if (altLandingPosition != '') {
