@@ -1,6 +1,6 @@
 # An Autumn Harvest - Inspired by Puzzle Bobble
 
-# 🦖 History and Significance
+# 🦖  History and Significance
 ![Puzzle Bobble](https://i0.wp.com/www.thexboxhub.com/wp-content/uploads/2018/12/neogeo-puzzle-bobble.jpeg?fit=1920%2C1080&ssl=1)
 
 Puzzle Bobble is a tile-matching puzzle arcade game developed and published by Taito in 1994.
@@ -9,22 +9,23 @@ It features a screen filled with multi-coloured bubbles which players must attem
 
 Due to time constraints, some simplifications have been made, although core functionality is still present. I hope to expand the basic gameplay to include added functionality in the future.
 
-# 🎮 Gameplay and Instructions
+# 🎮  Gameplay and Instructions
 The game begins with a rectangular arena filled with multi-colored bubbles. At the bottom of the arena, the player controls a pointer which aims and fires bubbles into the arena. The color of the bubbles to be fired is randomly generated and chosen from the colored bubbles remaining on the screen.
 
 The main objective of the game is to clear all the bubbles on the screen and ensure that they don't accumulate and reach the bottom of the arena. The bubbles are shot in a straight line based on an angle fixed by the player. If the fired bubble lands and creates a cluster of 3 or more similarly coloured bubbles, they will explode and be cleared. Any bubbles left hanging below will also be cleared. Points are added each time bubbles are cleared.
 
 In an arcade setting, players use a joystick and button to control the shooting trajectory. In my online adaption, players will use the left and right arrow keys to control the shooting trajectory and the space bar to shoot the bubble.
 
-### MVP
+# ✔️  MVP
 - Build the base of the game using HTML and CSS
 - Manipulate the DOM using JavaScript and jQuery
 - Host the game via Vercel
 - Save and update progress on Github
 - Implement event listeners which will allow the player to interact with the game using the keyboard
 
-## Technical Structure and Programmatic Code
-### Game Screen
+***
+
+# Game Flow
 The game has two main screens - A start screen and a game screen. The contents for each screen is stored in a separate div and will be shown/hidden through the use of event listeners.
 
 On the start screen, players click the start button to be brought to the game screen.
