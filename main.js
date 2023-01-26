@@ -432,6 +432,8 @@ const removeCluster = (arr) => { // Argument taken is an array of clustered bubb
 
 //! Function to check through the array and check for clusters of floaters
 const checkForFloaters = (arr) => { // Argument taken is an array of bubbles remaining in the grid
+
+  // Defining two empty array to hold bubbles that are floaters and bubbles that are not
   floaters = [];
   notFloaters = [];
 
